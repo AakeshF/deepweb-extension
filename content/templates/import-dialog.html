@@ -1,0 +1,131 @@
+<div class="deepweb-import-dialog-overlay" data-action="close">
+  <div class="deepweb-import-dialog" data-stop-propagation>
+    <div class="import-dialog-header">
+      <h2>Import Conversations</h2>
+      <button class="close-button" data-action="close" aria-label="Close dialog">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="import-dialog-content">
+      <!-- Error message placeholder -->
+      <div class="import-error" style="display: none;">
+        <svg class="error-icon" width="20" height="20" viewBox="0 0 20 20">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/>
+        </svg>
+        <span class="error-message"></span>
+      </div>
+      
+      <!-- Success message placeholder -->
+      <div class="import-success" style="display: none;">
+        <svg class="success-icon" width="20" height="20" viewBox="0 0 20 20">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-2 15l-5-5 1.41-1.41L8 12.17l7.59-7.59L17 6l-9 9z"/>
+        </svg>
+        <span class="success-message"></span>
+      </div>
+      
+      <!-- File Selection Section -->
+      <div class="import-section">
+        <h3>Select File</h3>
+        <div class="file-input-container">
+          <input type="file" id="import-file-input" accept=".json,.md,.html,.csv,.gz" data-action="selectFile" class="file-input">
+          <label for="import-file-input" class="file-input-label">
+            <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24">
+              <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+            </svg>
+            <span class="file-input-text">Choose file to import</span>
+          </label>
+        </div>
+        
+        <!-- File info (hidden by default) -->
+        <div class="file-info" style="display: none;">
+          <div class="file-info-item">
+            <span class="file-info-label">File size:</span>
+            <span class="file-info-value file-size"></span>
+          </div>
+          <div class="file-info-item">
+            <span class="file-info-label">Format:</span>
+            <span class="file-info-value file-format"></span>
+          </div>
+          <div class="file-info-item conversation-count-item" style="display: none;">
+            <span class="file-info-label">Conversations:</span>
+            <span class="file-info-value conversation-count"></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Preview Section (hidden by default) -->
+      <div class="import-section preview-section" style="display: none;">
+        <h3>Preview</h3>
+        <div class="import-preview">
+          <div class="preview-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total Conversations</span>
+              <span class="stat-value preview-conversation-count">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Messages</span>
+              <span class="stat-value preview-message-count">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Date Range</span>
+              <span class="stat-value preview-date-range">-</span>
+            </div>
+          </div>
+          
+          <!-- Duplicate warning (hidden by default) -->
+          <div class="duplicate-warning" style="display: none;">
+            <svg class="warning-icon" width="20" height="20" viewBox="0 0 20 20">
+              <path d="M1 16h18L10 2 1 16zm9-2H8v-2h2v2zm0-3H8V7h2v4z"/>
+            </svg>
+            <span class="duplicate-message">Found 0 existing conversation(s) with matching IDs</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Import Options Section -->
+      <div class="import-section">
+        <h3>Import Options</h3>
+        <div class="duplicate-handling-options">
+          <label class="radio-option selected">
+            <input type="radio" name="duplicateHandling" value="skip" checked data-action="selectDuplicateHandling" data-value="skip">
+            <div class="option-info">
+              <span class="option-label">Skip Duplicates</span>
+              <span class="option-description">Only import new conversations</span>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="duplicateHandling" value="replace" data-action="selectDuplicateHandling" data-value="replace">
+            <div class="option-info">
+              <span class="option-label">Replace Existing</span>
+              <span class="option-description">Overwrite existing conversations</span>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="duplicateHandling" value="merge" data-action="selectDuplicateHandling" data-value="merge">
+            <div class="option-info">
+              <span class="option-label">Merge Data</span>
+              <span class="option-description">Combine with existing conversations</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Progress indicator (hidden by default) -->
+      <div class="import-progress" style="display: none;">
+        <div class="progress-label">Importing conversations...</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-text">0%</div>
+      </div>
+    </div>
+    
+    <div class="import-dialog-footer">
+      <button class="cancel-button" data-action="close">Cancel</button>
+      <button class="import-button primary" data-action="import" disabled>Import</button>
+    </div>
+  </div>
+</div>

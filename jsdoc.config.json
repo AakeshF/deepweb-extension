@@ -1,0 +1,39 @@
+{
+  "source": {
+    "include": [
+      "src",
+      "background-firefox.js",
+      "content",
+      "popup",
+      "README.md"
+    ],
+    "exclude": [
+      "node_modules",
+      "tests",
+      "dist"
+    ]
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "node_modules/docdash"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
+    }
+  },
+  "markdown": {
+    "idInHeadings": true
+  },
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc", "closure"]
+  }
+}

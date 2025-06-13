@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DeepWeb Mobile Responsive Test</title>
+    <link rel="stylesheet" href="content/styles-modular.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .test-button {
+            padding: 12px 20px;
+            margin: 5px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background: #1565c0;
+        }
+        
+        .device-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .gesture-area {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin: 10px 0;
+            user-select: none;
+        }
+        
+        #deepweb-chat-root {
+            /* Override for test */
+            position: relative !important;
+            bottom: auto !important;
+            right: auto !important;
+            margin: 20px auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 DeepWeb Mobile Responsive Test</h1>
+        
+        <div class="device-info" id="deviceInfo">
+            <h3>Device Information</h3>
+            <div id="deviceDetails"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 Responsive Manager Tests</h3>
+            <button class="test-button" onclick="testDeviceDetection()">Test Device Detection</button>
+            <button class="test-button" onclick="testTouchSupport()">Test Touch Support</button>
+            <button class="test-button" onclick="testOrientationChange()">Simulate Orientation Change</button>
+            <button class="test-button" onclick="testViewportChange()">Test Viewport Change</button>
+            <div id="responsiveResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>👆 Touch Gesture Tests</h3>
+            <div class="gesture-area" id="gestureArea">
+                <span>👆 Try touch gestures here (swipe, pinch, tap, long press)</span>
+            </div>
+            <div id="gestureResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎨 CSS Responsive Tests</h3>
+            <button class="test-button" onclick="testMobileLayout()">Apply Mobile Layout</button>
+            <button class="test-button" onclick="testTabletLayout()">Apply Tablet Layout</button>
+            <button class="test-button" onclick="testDesktopLayout()">Apply Desktop Layout</button>
+            <button class="test-button" onclick="testTextScaling()">Test Text Scaling</button>
+            <div id="layoutResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>💬 Chat Container Test</h3>
+            <button class="test-button" onclick="createTestChatContainer()">Create Mobile Chat Container</button>
+            <button class="test-button" onclick="testMobileInteractions()">Test Mobile Interactions</button>
+            <div id="chatResults"></div>
+        </div>
+    </div>
+
+    <!-- Test Chat Container -->
+    <div id="testChatContainer"></div>
+
+    <script type="module">
+        import { responsiveManager } from './content/utils/ResponsiveManager.js';
+        
+        // Global access for testing
+        window.responsiveManager = responsiveManager;
+        window.testResults = {};
+        
+        // Initialize and display device info
+        function updateDeviceInfo() {
+            const details = document.getElementById('deviceDetails');
+            details.innerHTML = `
+                <p><strong>Device Type:</strong> ${responsiveManager.getDevice()}</p>
+                <p><strong>Breakpoint:</strong> ${responsiveManager.getBreakpoint()}</p>
+                <p><strong>Orientation:</strong> ${responsiveManager.getOrientation()}</p>
+                <p><strong>Touch Supported:</strong> ${responsiveManager.isTouchDevice()}</p>
+                <p><strong>Is Mobile:</strong> ${responsiveManager.isMobile()}</p>
+                <p><strong>Is Tablet:</strong> ${responsiveManager.isTablet()}</p>
+                <p><strong>Is Desktop:</strong> ${responsiveManager.isDesktop()}</p>
+                <p><strong>Viewport Size:</strong> ${window.innerWidth} x ${window.innerHeight}</p>
+                <p><strong>Keyboard Visible:</strong> ${responsiveManager.isKeyboardVisible()}</p>
+            `;
+        }
+        
+        // Test functions
+        window.testDeviceDetection = function() {
+            const results = document.getElementById('responsiveResults');
+            const device = responsiveManager.detectDevice();
+            
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Device Detection: ${device}
+                </div>
+            `;
+            
+            updateDeviceInfo();
+        };
+        
+        window.testTouchSupport = function() {
+            const results = document.getElementById('responsiveResults');
+            const touchSupported = responsiveManager.detectTouchSupport();
+            
+            results.innerHTML += `
+                <div class="status ${touchSupported ? 'success' : 'error'}">
+                    ${touchSupported ? '✅' : '❌'} Touch Support: ${touchSupported}
+                </div>
+            `;
+        };
+        
+        window.testOrientationChange = function() {
+            const results = document.getElementById('responsiveResults');
+            const currentOrientation = responsiveManager.detectOrientation();
+            
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Orientation: ${currentOrientation}
+                </div>
+            `;
+            
+            updateDeviceInfo();
+        };
+        
+        window.testViewportChange = function() {
+            const results = document.getElementById('responsiveResults');
+            responsiveManager.updateViewportHeight();
+            
+            const vh = getComputedStyle(document.documentElement).getPropertyValue('--vh');
+            
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Viewport Height Unit: ${vh}
+                </div>
+            `;
+        };
+        
+        window.testMobileLayout = function() {
+            document.documentElement.setAttribute('data-device', 'mobile');
+            document.documentElement.setAttribute('data-orientation', 'portrait');
+            document.documentElement.classList.add('touch-device');
+            
+            const results = document.getElementById('layoutResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Applied mobile layout classes
+                </div>
+            `;
+        };
+        
+        window.testTabletLayout = function() {
+            document.documentElement.setAttribute('data-device', 'tablet');
+            document.documentElement.setAttribute('data-orientation', 'landscape');
+            
+            const results = document.getElementById('layoutResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Applied tablet layout classes
+                </div>
+            `;
+        };
+        
+        window.testDesktopLayout = function() {
+            document.documentElement.setAttribute('data-device', 'desktop');
+            document.documentElement.classList.remove('touch-device');
+            
+            const results = document.getElementById('layoutResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Applied desktop layout classes
+                </div>
+            `;
+        };
+        
+        window.testTextScaling = function() {
+            const scales = ['small', 'normal', 'large', 'extra-large'];
+            let currentScale = 0;
+            
+            const cycleScale = () => {
+                document.body.classList.remove('text-scale-small', 'text-scale-normal', 'text-scale-large', 'text-scale-extra-large');
+                document.body.classList.add(`text-scale-${scales[currentScale]}`);
+                
+                const results = document.getElementById('layoutResults');
+                results.innerHTML += `
+                    <div class="status success">
+                        ✅ Applied text scale: ${scales[currentScale]}
+                    </div>
+                `;
+                
+                currentScale = (currentScale + 1) % scales.length;
+                
+                if (currentScale > 0) {
+                    setTimeout(cycleScale, 1000);
+                }
+            };
+            
+            cycleScale();
+        };
+        
+        window.createTestChatContainer = function() {
+            const container = document.getElementById('testChatContainer');
+            
+            // Create a simplified chat container for testing
+            container.innerHTML = `
+                <div id="deepweb-chat-root" class="mobile-mode" data-device="mobile" data-orientation="portrait">
+                    <div class="deepweb-header">
+                        <div class="deepweb-header-title">
+                            <div class="deepweb-logo">DW</div>
+                            DeepWeb Chat
+                        </div>
+                        <div class="deepweb-header-controls">
+                            <button class="deepweb-control-btn">⚙️</button>
+                            <button class="deepweb-control-btn">➖</button>
+                            <button class="deepweb-control-btn">✕</button>
+                        </div>
+                    </div>
+                    <div class="deepweb-model-selector">
+                        <select class="deepweb-model-select">
+                            <option>deepseek-chat</option>
+                            <option>deepseek-coder</option>
+                        </select>
+                    </div>
+                    <div class="deepweb-messages">
+                        <div class="deepweb-message deepweb-message-assistant">
+                            Hello! This is a test message to see how the mobile layout looks.
+                        </div>
+                        <div class="deepweb-message deepweb-message-user">
+                            This is a user message response to test the mobile chat interface.
+                        </div>
+                        <div class="deepweb-message deepweb-message-assistant">
+                            Here's another assistant message with some longer content to test how text wrapping and message layout works on mobile devices with smaller screens.
+                        </div>
+                    </div>
+                    <div class="deepweb-input-area">
+                        <div class="deepweb-input-container">
+                            <input type="text" class="deepweb-input" placeholder="Type your message...">
+                            <button class="deepweb-send-btn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const results = document.getElementById('chatResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Created test chat container with mobile layout
+                </div>
+            `;
+        };
+        
+        window.testMobileInteractions = function() {
+            const chatRoot = document.getElementById('deepweb-chat-root');
+            if (!chatRoot) {
+                const results = document.getElementById('chatResults');
+                results.innerHTML += `
+                    <div class="status error">
+                        ❌ Create chat container first
+                    </div>
+                `;
+                return;
+            }
+            
+            // Test touch-friendly button sizing
+            const buttons = chatRoot.querySelectorAll('.deepweb-control-btn, .deepweb-send-btn');
+            buttons.forEach(button => {
+                responsiveManager.makeTouchFriendly(button);
+            });
+            
+            const results = document.getElementById('chatResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ✅ Applied touch-friendly sizing to ${buttons.length} buttons
+                </div>
+            `;
+        };
+        
+        // Setup gesture testing
+        const gestureArea = document.getElementById('gestureArea');
+        const gestureResults = document.getElementById('gestureResults');
+        
+        // Listen for responsive events
+        responsiveManager.on('tap', (data) => {
+            gestureResults.innerHTML += `
+                <div class="status success">
+                    👆 Tap detected at (${Math.round(data.x)}, ${Math.round(data.y)})
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('longpress', (data) => {
+            gestureResults.innerHTML += `
+                <div class="status success">
+                    👆 Long press detected at (${Math.round(data.x)}, ${Math.round(data.y)})
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('swipe', (data) => {
+            gestureResults.innerHTML += `
+                <div class="status success">
+                    👆 Swipe ${data.direction} detected (distance: ${Math.round(data.distance)}px)
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('pinch', (data) => {
+            gestureResults.innerHTML += `
+                <div class="status success">
+                    👆 Pinch gesture detected (scale: ${data.scale.toFixed(2)})
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('devicechange', (data) => {
+            updateDeviceInfo();
+            const results = document.getElementById('responsiveResults');
+            results.innerHTML += `
+                <div class="status success">
+                    📱 Device changed: ${data.oldDevice} → ${data.newDevice}
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('orientationchange', (data) => {
+            updateDeviceInfo();
+            const results = document.getElementById('responsiveResults');
+            results.innerHTML += `
+                <div class="status success">
+                    🔄 Orientation changed: ${data.oldOrientation} → ${data.newOrientation}
+                </div>
+            `;
+        });
+        
+        responsiveManager.on('keyboardchange', (data) => {
+            updateDeviceInfo();
+            const results = document.getElementById('responsiveResults');
+            results.innerHTML += `
+                <div class="status success">
+                    ⌨️ Keyboard ${data.visible ? 'shown' : 'hidden'} (height diff: ${data.heightDiff}px)
+                </div>
+            `;
+        });
+        
+        // Initialize
+        updateDeviceInfo();
+        
+        // Auto-run some basic tests
+        setTimeout(() => {
+            testDeviceDetection();
+            testTouchSupport();
+        }, 1000);
+    </script>
+</body>
+</html>

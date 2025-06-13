@@ -1,0 +1,25 @@
+# Prettier ignore patterns
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+artifacts/
+coverage/
+*.min.js
+*.min.css
+
+# Test files
+tests/fixtures/
+tests/e2e/reports/
+
+# Documentation
+docs/
+
+# Third-party
+vendor/
+
+# Generated files
+*.generated.js

@@ -1,0 +1,25 @@
+# ESLint ignore patterns
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+artifacts/
+coverage/
+
+# Test files
+tests/fixtures/
+tests/e2e/reports/
+
+# Documentation
+docs/
+*.md
+
+# Configuration
+webpack.config.js
+jest.config.js
+babel.config.js
+
+# Third-party
+vendor/

@@ -1,0 +1,84 @@
+{
+  "name": "deepweb-firefox-extension",
+  "version": "1.0.0",
+  "description": "DeepWeb AI Assistant - Firefox Extension powered by DeepSeek",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "jest --config jest.e2e.config.js",
+    "lint": "eslint . --ext .js,.html",
+    "lint:fix": "eslint . --ext .js,.html --fix",
+    "format": "prettier --write \"**/*.{js,json,html,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\"",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "build:modular": "node scripts/build-modular.js",
+    "build:unified": "node scripts/build-unified.js",
+    "migrate:config": "node scripts/migrate-config.js",
+    "watch": "webpack --mode development --watch",
+    "package": "web-ext build --source-dir=dist --artifacts-dir=artifacts",
+    "start:firefox": "web-ext run --source-dir=dist",
+    "validate": "web-ext lint --source-dir=dist",
+    "precommit": "lint-staged",
+    "prepare": "husky install",
+    "docs": "jsdoc -c jsdoc.config.json"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-jest": "^29.7.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jest": "^27.4.0",
+    "eslint-plugin-mozilla": "^3.7.1",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-webextension-mock": "^3.8.9",
+    "jsdoc": "^4.0.2",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "puppeteer": "^21.3.0",
+    "sinon": "^16.0.0",
+    "sinon-chrome": "^3.0.1",
+    "web-ext": "^7.8.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,html,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/unit/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
+  }
+}

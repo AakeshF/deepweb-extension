@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DeepWeb Firefox Extension Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f4f4f4;
+            border-radius: 8px;
+        }
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+        }
+        code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>DeepWeb Firefox Extension Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li>Make sure the DeepWeb extension is installed in Firefox</li>
+            <li>Click the extension icon or press <code>Ctrl+Shift+Y</code> to toggle the chat</li>
+            <li>Select some text and right-click to use "Ask DeepWeb AI"</li>
+            <li>Test different AI models (Chat, Coder, Reasoner)</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Sample Text for Testing</h2>
+        <p>
+            <span class="highlight">Artificial Intelligence</span> is transforming the way we interact with technology. 
+            From natural language processing to computer vision, AI technologies are becoming increasingly sophisticated.
+        </p>
+        <p>
+            Here's a simple Python function to test with DeepSeek Coder:
+        </p>
+        <pre><code>def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Complex Problem for Reasoner</h2>
+        <p>
+            A train leaves Station A at 9:00 AM traveling at 60 mph. Another train leaves Station B 
+            (300 miles away) at 10:00 AM traveling toward Station A at 80 mph. When do they meet?
+        </p>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Features</h2>
+        <ul>
+            <li>✅ Chat UI appears in bottom-right corner</li>
+            <li>✅ Model selection dropdown works</li>
+            <li>✅ Rate limiting (10 second cooldown)</li>
+            <li>✅ Context menu integration</li>
+            <li>✅ Keyboard shortcut support</li>
+            <li>✅ Minimize/close buttons functional</li>
+            <li>✅ Security: Input sanitization</li>
+            <li>✅ Lazy loading (UI only loads when activated)</li>
+        </ul>
+    </div>
+</body>
+</html>

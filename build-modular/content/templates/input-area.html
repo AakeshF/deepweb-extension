@@ -1,0 +1,22 @@
+<div id="deepweb-input-area" class="deepweb-input-area">
+  <div class="deepweb-input-container">
+    <input 
+      id="deepweb-input" 
+      type="text" 
+      class="deepweb-input"
+      placeholder="Ask me anything..." 
+      maxlength="1000"
+      aria-label="Type your message"
+    />
+    <button id="deepweb-send" class="deepweb-send-btn" aria-label="Send message">
+      Send
+    </button>
+  </div>
+  
+  <div id="deepweb-rate-limit" class="deepweb-rate-limit" style="display: none;">
+    <span class="deepweb-rate-limit-icon">⏱️</span>
+    <span class="deepweb-rate-limit-text">
+      Please wait <span id="deepweb-timer">10</span> seconds before sending another message.
+    </span>
+  </div>
+</div>
