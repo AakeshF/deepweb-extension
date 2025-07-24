@@ -1,0 +1,141 @@
+<div class="deepweb-export-dialog-overlay" data-action="close">
+  <div class="deepweb-export-dialog" data-stop-propagation>
+    <div class="export-dialog-header">
+      <h2>Export Conversations</h2>
+      <button class="close-button" data-action="close" aria-label="Close dialog">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="export-dialog-content">
+      <!-- Error message placeholder -->
+      <div class="export-error" style="display: none;">
+        <svg class="error-icon" width="20" height="20" viewBox="0 0 20 20">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/>
+        </svg>
+        <span class="error-message"></span>
+      </div>
+      
+      <!-- Success message placeholder -->
+      <div class="export-success" style="display: none;">
+        <svg class="success-icon" width="20" height="20" viewBox="0 0 20 20">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-2 15l-5-5 1.41-1.41L8 12.17l7.59-7.59L17 6l-9 9z"/>
+        </svg>
+        <span class="success-message"></span>
+      </div>
+      
+      <!-- Export Scope Section -->
+      <div class="export-section">
+        <h3>Export Scope</h3>
+        <div class="export-scope-options">
+          <label class="radio-option">
+            <input type="radio" name="exportScope" value="current" data-action="selectScope" data-value="current">
+            <span class="radio-label">Current Conversation</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="exportScope" value="all" checked data-action="selectScope" data-value="all">
+            <span class="radio-label">All Conversations</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="exportScope" value="dateRange" data-action="selectScope" data-value="dateRange">
+            <span class="radio-label">Date Range</span>
+          </label>
+        </div>
+        
+        <!-- Date range inputs (hidden by default) -->
+        <div class="date-range-inputs" style="display: none;">
+          <div class="date-input-group">
+            <label for="export-start-date">Start Date</label>
+            <input type="date" id="export-start-date" data-action="setStartDate">
+          </div>
+          <div class="date-input-group">
+            <label for="export-end-date">End Date</label>
+            <input type="date" id="export-end-date" data-action="setEndDate">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Export Format Section -->
+      <div class="export-section">
+        <h3>Export Format</h3>
+        <div class="export-format-options">
+          <label class="format-option selected">
+            <input type="radio" name="exportFormat" value="json" checked data-action="selectFormat" data-value="json">
+            <div class="format-info">
+              <span class="format-label">JSON</span>
+              <span class="format-description">Complete data with all details</span>
+            </div>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="exportFormat" value="markdown" data-action="selectFormat" data-value="markdown">
+            <div class="format-info">
+              <span class="format-label">Markdown</span>
+              <span class="format-description">Human-readable format</span>
+            </div>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="exportFormat" value="html" data-action="selectFormat" data-value="html">
+            <div class="format-info">
+              <span class="format-label">HTML</span>
+              <span class="format-description">Web-viewable format</span>
+            </div>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="exportFormat" value="csv" data-action="selectFormat" data-value="csv">
+            <div class="format-info">
+              <span class="format-label">CSV</span>
+              <span class="format-description">Spreadsheet compatible</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Export Options Section -->
+      <div class="export-section">
+        <h3>Export Options</h3>
+        <div class="export-options">
+          <label class="checkbox-option">
+            <input type="checkbox" checked data-action="toggleOption" data-option="includeMetadata">
+            <span>Include metadata (models, URLs, etc.)</span>
+          </label>
+          
+          <label class="checkbox-option">
+            <input type="checkbox" checked data-action="toggleOption" data-option="includeTimestamps">
+            <span>Include timestamps</span>
+          </label>
+          
+          <label class="checkbox-option">
+            <input type="checkbox" checked data-action="toggleOption" data-option="includeStatistics">
+            <span>Include statistics summary</span>
+          </label>
+          
+          <label class="checkbox-option">
+            <input type="checkbox" data-action="toggleOption" data-option="anonymize">
+            <span>Anonymize personal data</span>
+          </label>
+          
+          <label class="checkbox-option">
+            <input type="checkbox" data-action="toggleOption" data-option="compress">
+            <span>Compress file (gzip)</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Progress indicator (hidden by default) -->
+      <div class="export-progress" style="display: none;">
+        <div class="progress-label">Exporting conversations...</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-text">0%</div>
+      </div>
+    </div>
+    
+    <div class="export-dialog-footer">
+      <button class="cancel-button" data-action="close">Cancel</button>
+      <button class="export-button primary" data-action="export">Export</button>
+    </div>
+  </div>
+</div>

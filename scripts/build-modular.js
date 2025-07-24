@@ -43,7 +43,9 @@ async function buildModular() {
       'icons',
       'content/templates',
       'content/components',
-      'content/utils'
+      'content/utils',
+      'content/styles',
+      'src/intelligence'
     ];
 
     for (const dir of dirsToCopy) {

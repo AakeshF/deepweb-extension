@@ -12,6 +12,7 @@ export default class InputArea extends BaseComponent {
     super(options);
     this.onSendMessage = options.onSendMessage || (() => {});
     this.onStreamingToggle = options.onStreamingToggle || (() => {});
+    this.onTemplateClick = options.onTemplateClick || (() => {});
     this.state = {
       isProcessing: false,
       lastRequestTime: 0,
@@ -33,6 +34,7 @@ export default class InputArea extends BaseComponent {
     this.rateLimitDiv = this.element.querySelector('#deepweb-rate-limit');
     this.timerSpan = this.element.querySelector('#deepweb-timer');
     this.streamingToggle = this.element.querySelector('#deepweb-streaming-toggle');
+    this.templateButton = this.element.querySelector('#deepweb-template-button');
     
     // Load streaming preference
     this.loadStreamingPreference();
@@ -60,6 +62,24 @@ export default class InputArea extends BaseComponent {
       });
     }
 
+    // Template button
+    if (this.templateButton) {
+      Object.assign(this.templateButton.style, {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '6px 12px',
+        background: 'white',
+        border: '1px solid #d1d5db',
+        borderRadius: '6px',
+        fontSize: '13px',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+        color: '#666',
+        marginRight: '8px'
+      });
+    }
+    
     // Streaming toggle button
     if (this.streamingToggle) {
       Object.assign(this.streamingToggle.style, {
@@ -137,6 +157,11 @@ export default class InputArea extends BaseComponent {
     if (this.streamingToggle) {
       this.streamingToggle.addEventListener('click', () => this.toggleStreaming());
     }
+    
+    // Template button click
+    if (this.templateButton) {
+      this.templateButton.addEventListener('click', () => this.onTemplateClick());
+    }
 
     // Input focus effects
     this.input.addEventListener('focus', () => {
@@ -172,6 +197,21 @@ export default class InputArea extends BaseComponent {
         if (!this.state.streamingEnabled) {
           this.streamingToggle.style.background = 'white';
         }
+      });
+    }
+    
+    // Template button hover effects
+    if (this.templateButton) {
+      this.templateButton.addEventListener('mouseenter', () => {
+        this.templateButton.style.background = '#f5f5f5';
+        this.templateButton.style.borderColor = '#667eea';
+        this.templateButton.style.color = '#667eea';
+      });
+      
+      this.templateButton.addEventListener('mouseleave', () => {
+        this.templateButton.style.background = 'white';
+        this.templateButton.style.borderColor = '#d1d5db';
+        this.templateButton.style.color = '#666';
       });
     }
   }
@@ -294,5 +334,27 @@ export default class InputArea extends BaseComponent {
 
   isStreamingEnabled() {
     return this.state.streamingEnabled;
+  }
+  
+  setValue(value) {
+    if (this.input) {
+      this.input.value = value;
+    }
+  }
+  
+  getValue() {
+    return this.input ? this.input.value : '';
+  }
+  
+  focus() {
+    if (this.input) {
+      this.input.focus();
+    }
+  }
+  
+  clear() {
+    if (this.input) {
+      this.input.value = '';
+    }
   }
 }

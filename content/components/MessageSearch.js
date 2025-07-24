@@ -5,6 +5,7 @@
 
 import BaseComponent from './BaseComponent.js';
 import DOMUtils from '../utils/dom-utils.js';
+import { DOMSecurity } from '../../src/security/DOMSecurity.js';
 
 export default class MessageSearch extends BaseComponent {
   constructor(options = {}) {
@@ -533,7 +534,8 @@ export default class MessageSearch extends BaseComponent {
       result.matchContext || result.content.substring(0, 200),
       this.state.query
     );
-    content.innerHTML = highlightedContent;
+    // Use DOMSecurity to safely append highlighted content
+    DOMSecurity.appendHTML(content, highlightedContent, true);
 
     item.appendChild(header);
     item.appendChild(content);

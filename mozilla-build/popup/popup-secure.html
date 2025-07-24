@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+    <title>DeepWeb Settings</title>
+    <style>
+        body {
+            width: 350px;
+            padding: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #212529;
+            flex: 1;
+        }
+        
+        .version {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .tab-container {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: white;
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab.active {
+            color: #007bff;
+            background: #e7f3ff;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .setting-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #212529;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .setting-description {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        input[type="password"] {
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .api-key-container {
+            position: relative;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .api-key-container input {
+            flex: 1;
+        }
+        
+        .api-key-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .toggle-visibility,
+        .test-connection {
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #ced4da;
+            background: white;
+            border-radius: 6px;
+            color: #495057;
+            transition: all 0.2s;
+        }
+        
+        .toggle-visibility:hover,
+        .test-connection:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .parameter-inputs {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .parameter-item {
+            margin-bottom: 15px;
+        }
+        
+        .parameter-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .parameter-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .parameter-value {
+            font-family: monospace;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            padding: 0;
+            height: 6px;
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 10px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background: #545b62;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+
+        #status {
+            display: none;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .status.info {
+            background: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+        }
+        
+        .status.success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+        
+        .security-notice {
+            background: #fff3cd;
+            border: 1px solid #ffecb5;
+            color: #664d03;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .security-notice strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DeepWeb Settings</h1>
+        <span class="version">v1.0.0</span>
+    </div>
+
+    <div id="status"></div>
+    
+    <div class="tab-container">
+        <button class="tab active" data-tab="api">API Keys</button>
+        <button class="tab" data-tab="model">Model</button>
+        <button class="tab" data-tab="appearance">Appearance</button>
+        <button class="tab" data-tab="advanced">Advanced</button>
+    </div>
+
+    <div id="api" class="tab-content active">
+        <div class="security-notice">
+            <strong>🔒 Security Notice</strong>
+            Your API keys are encrypted and stored locally. They are never sent to our servers.
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">DeepSeek API Key</label>
+            <div class="setting-description">Primary AI provider for this extension</div>
+            <div class="api-key-container">
+                <input type="password" id="deepseekKey" placeholder="sk-..." data-sensitive="true">
+                <div class="api-key-actions">
+                    <button class="toggle-visibility">Show</button>
+                    <button class="test-connection" data-provider="deepseek">Test</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">OpenAI API Key</label>
+            <div class="setting-description">For GPT models (optional)</div>
+            <div class="api-key-container">
+                <input type="password" id="openaiKey" placeholder="sk-..." data-sensitive="true">
+                <div class="api-key-actions">
+                    <button class="toggle-visibility">Show</button>
+                    <button class="test-connection" data-provider="openai">Test</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Anthropic API Key</label>
+            <div class="setting-description">For Claude models (optional)</div>
+            <div class="api-key-container">
+                <input type="password" id="anthropicKey" placeholder="sk-ant-..." data-sensitive="true">
+                <div class="api-key-actions">
+                    <button class="toggle-visibility">Show</button>
+                    <button class="test-connection" data-provider="anthropic">Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="model" class="tab-content">
+        <div class="setting-group">
+            <label class="setting-label">Default Model Parameters</label>
+            <div class="parameter-inputs">
+                <div class="parameter-item">
+                    <div class="parameter-label">
+                        <span>Temperature</span>
+                        <span class="parameter-value" id="temperatureValue">0.7</span>
+                    </div>
+                    <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                    <div class="setting-description">Controls randomness (0 = deterministic, 1 = creative)</div>
+                </div>
+                
+                <div class="parameter-item">
+                    <div class="parameter-label">
+                        <span>Max Tokens</span>
+                        <span class="parameter-value" id="maxTokensValue">1000</span>
+                    </div>
+                    <input type="number" id="maxTokens" value="1000" min="100" max="8192" step="100">
+                    <div class="setting-description">Maximum response length</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Response Mode</label>
+            <select id="streamResponses">
+                <option value="true">Stream Responses (Real-time)</option>
+                <option value="false">Complete Responses (Wait for full response)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="appearance" class="tab-content">
+        <div class="setting-group">
+            <label class="setting-label">Theme</label>
+            <select id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="auto">Auto (Follow System)</option>
+            </select>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Layout</label>
+            <select id="layout">
+                <option value="corner">Bottom Corner</option>
+                <option value="sidebar">Side Panel</option>
+                <option value="floating">Floating Window</option>
+            </select>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Font Size</label>
+            <select id="fontSize">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="advanced" class="tab-content">
+        <div class="setting-group">
+            <label class="setting-label">Data Management</label>
+            <div class="button-group">
+                <button id="exportData" class="secondary">Export Data</button>
+                <button id="clearData" class="danger">Clear All Data</button>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Privacy</label>
+            <div class="parameter-inputs">
+                <label>
+                    <input type="checkbox" id="telemetry" style="width: auto; margin-right: 8px;">
+                    Share anonymous usage statistics
+                </label>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <label class="setting-label">Debug</label>
+            <div class="parameter-inputs">
+                <label>
+                    <input type="checkbox" id="debugMode" style="width: auto; margin-right: 8px;">
+                    Enable debug logging
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button id="save">Save Settings</button>
+    </div>
+
+    <script type="module" src="popup-firefox-secure.js"></script>
+</body>
+</html>

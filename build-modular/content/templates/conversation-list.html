@@ -1,0 +1,58 @@
+<div class="deepweb-conversation-list" role="navigation" aria-label="Conversations">
+  <!-- Header -->
+  <div class="deepweb-list-header">
+    <h3 class="deepweb-list-title">Conversations</h3>
+    <button class="deepweb-new-conversation-btn" type="button" title="New conversation">
+      + New
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="deepweb-search-container">
+    <div class="deepweb-search-wrapper">
+      <span class="deepweb-search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="deepweb-search-input" 
+        placeholder="Search conversations..."
+        aria-label="Search conversations"
+      />
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="deepweb-filter-container">
+    <label class="deepweb-archive-filter">
+      <input type="checkbox" class="deepweb-archive-checkbox" />
+      <span>Show archived</span>
+    </label>
+    <span class="deepweb-conversation-count"></span>
+  </div>
+
+  <!-- List Container -->
+  <div class="deepweb-list-container" role="list">
+    <!-- Loading indicator -->
+    <div class="deepweb-loading-indicator" style="display: none;">
+      Loading conversations...
+    </div>
+
+    <!-- Empty state -->
+    <div class="deepweb-empty-state" style="display: none;">
+      <div class="deepweb-empty-icon">💬</div>
+      <p class="deepweb-empty-text">No conversations yet</p>
+      <p class="deepweb-empty-subtext">Start a new conversation to get started</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="deepweb-error-state" style="display: none;"></div>
+
+    <!-- Conversation items will be dynamically added here -->
+  </div>
+
+  <!-- Pagination -->
+  <div class="deepweb-pagination">
+    <button class="deepweb-pagination-prev" type="button" title="Previous page">←</button>
+    <span class="deepweb-page-info">Page 1 of 1</span>
+    <button class="deepweb-pagination-next" type="button" title="Next page">→</button>
+  </div>
+</div>

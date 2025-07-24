@@ -360,20 +360,44 @@ export default class ChatContainer extends BaseComponent {
       textAlign: 'center'
     });
     
-    const content = `
-      <h3 style="color: #c00; margin: 0 0 10px;">Failed to Load Chat</h3>
-      <p style="color: #666; margin: 0 0 15px;">${errorResult.userMessage}</p>
-      <button onclick="window.location.reload()" style="
-        padding: 8px 16px;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-      ">Reload Page</button>
-    `;
+    // Create error heading
+    const heading = DOMUtils.createElement('h3', {}, {
+      textContent: 'Failed to Load Chat',
+      style: {
+        color: '#c00',
+        margin: '0 0 10px'
+      }
+    });
     
-    container.innerHTML = content;
+    // Create error message
+    const message = DOMUtils.createElement('p', {}, {
+      textContent: errorResult.userMessage,
+      style: {
+        color: '#666',
+        margin: '0 0 15px'
+      }
+    });
+    
+    // Create reload button
+    const button = DOMUtils.createElement('button', {}, {
+      textContent: 'Reload Page',
+      style: {
+        padding: '8px 16px',
+        background: '#667eea',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+      }
+    });
+    
+    // Add click event listener
+    button.addEventListener('click', () => window.location.reload());
+    
+    // Append elements to container
+    container.appendChild(heading);
+    container.appendChild(message);
+    container.appendChild(button);
     return container;
   }
 

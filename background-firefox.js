@@ -922,11 +922,20 @@ async function handleChatRequest(request, sender) {
     const model = request.model || 'deepseek-chat';
     console.log('[DeepWeb Background] Using model:', model);
     
-    // Prepare context
+    // Prepare enhanced context from ContextManager
     const context = {
       url: request.context?.url || '',
       title: request.context?.title || '',
-      content: (request.context?.content || '').substring(0, 500)
+      content: request.context?.pageContent || request.context?.content || '',
+      contentType: request.context?.contentType || 'unknown',
+      relevanceScore: request.context?.relevanceScore || 0,
+      tokenEstimate: request.context?.tokenEstimate || 0,
+      metadata: request.context?.metadata || {},
+      // Enhanced context features
+      memory: request.context?.memory || {},
+      crossPage: request.context?.crossPage || {},
+      contextSummary: request.context?.contextSummary || '',
+      relevantSections: request.context?.relevantSections || []
     };
     
     // Get conversation context if provided
@@ -941,14 +950,15 @@ async function handleChatRequest(request, sender) {
       }));
     }
     
-    // Make API request
+    // Make API request with parameters
     console.log('[DeepWeb Background] Making API request...');
     const response = await makeAPIRequest({
       apiKey,
       message: sanitizedMessage,
       context,
       model,
-      conversationContext
+      conversationContext,
+      parameters: request.parameters || {}
     });
     
     console.log('[DeepWeb Background] API response received');
@@ -968,7 +978,7 @@ async function handleChatRequest(request, sender) {
   }
 }
 
-async function makeAPIRequest({ apiKey, message, context, model, conversationContext = [] }) {
+async function makeAPIRequest({ apiKey, message, context, model, conversationContext = [], parameters = {} }) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), CONFIG.api.timeout);
   
@@ -986,20 +996,29 @@ async function makeAPIRequest({ apiKey, message, context, model, conversationCon
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful AI assistant integrated into Firefox. Help users understand and interact with web pages. Provide clear, concise answers.'
+            content: parameters.systemPrompt || `You are a helpful AI assistant integrated into Firefox. Help users understand and interact with web pages. Provide clear, concise answers.
+Content Type: ${context.contentType || 'unknown'}
+Relevance Score: ${context.relevanceScore || 'N/A'}`
           },
           ...conversationContext,
           {
             role: 'user',
-            content: conversationContext.length > 0 ? message : `Page URL: ${context.url}
+            content: conversationContext.length > 0 ? message : context.content ? 
+              `${context.content}
+
+User Question: ${message}` : 
+              `Page URL: ${context.url}
 Page Title: ${context.title}
-Page Content Preview: ${context.content}
 
 User Question: ${message}`
           }
         ],
-        max_tokens: 1000,
-        temperature: 0.7,
+        max_tokens: parameters.maxTokens || 1000,
+        temperature: parameters.temperature !== undefined ? parameters.temperature : 0.7,
+        top_p: parameters.topP !== undefined ? parameters.topP : 0.95,
+        frequency_penalty: parameters.frequencyPenalty || 0,
+        presence_penalty: parameters.presencePenalty || 0,
+        stop: parameters.stopSequences && parameters.stopSequences.length > 0 ? parameters.stopSequences : undefined,
         stream: false
       }),
       signal: controller.signal
@@ -1119,11 +1138,20 @@ async function handleStreamingRequest(port, request) {
     const model = request.model || 'deepseek-chat';
     console.log('[DeepWeb Background] Using model:', model);
     
-    // Prepare context
+    // Prepare enhanced context from ContextManager
     const context = {
       url: request.context?.url || '',
       title: request.context?.title || '',
-      content: (request.context?.content || '').substring(0, 500)
+      content: request.context?.pageContent || request.context?.content || '',
+      contentType: request.context?.contentType || 'unknown',
+      relevanceScore: request.context?.relevanceScore || 0,
+      tokenEstimate: request.context?.tokenEstimate || 0,
+      metadata: request.context?.metadata || {},
+      // Enhanced context features
+      memory: request.context?.memory || {},
+      crossPage: request.context?.crossPage || {},
+      contextSummary: request.context?.contextSummary || '',
+      relevantSections: request.context?.relevantSections || []
     };
     
     // Get conversation context if provided
@@ -1164,20 +1192,20 @@ async function handleStreamingRequest(port, request) {
           messages: [
             {
               role: 'system',
-              content: 'You are a helpful AI assistant integrated into Firefox. Help users understand and interact with web pages. Provide clear, concise answers.'
+              content: request.parameters?.systemPrompt || buildSystemPrompt(context)
             },
             ...conversationContext,
             {
               role: 'user',
-              content: conversationContext.length > 0 ? sanitizedMessage : `Page URL: ${context.url}
-Page Title: ${context.title}
-Page Content Preview: ${context.content}
-
-User Question: ${sanitizedMessage}`
+              content: buildUserMessage(sanitizedMessage, context, conversationContext)
             }
           ],
-          max_tokens: 1000,
-          temperature: 0.7,
+          max_tokens: request.parameters?.maxTokens || 1000,
+          temperature: request.parameters?.temperature !== undefined ? request.parameters.temperature : 0.7,
+          top_p: request.parameters?.topP !== undefined ? request.parameters.topP : 0.95,
+          frequency_penalty: request.parameters?.frequencyPenalty || 0,
+          presence_penalty: request.parameters?.presencePenalty || 0,
+          stop: request.parameters?.stopSequences && request.parameters.stopSequences.length > 0 ? request.parameters.stopSequences : undefined,
           stream: true
         }),
         signal: controller.signal
@@ -1338,11 +1366,83 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 });
 
-// Cleanup on unload
-browser.runtime.onSuspend.addListener(() => {
-  console.log('[DeepWeb Background] Cleaning up resources...');
-  // Clear any pending timers or requests
-  rateLimiter.requests = [];
-});
+// Cleanup on unload (Chrome only - not supported in Firefox)
+// Note: runtime.onSuspend is not supported in Firefox 78+
+// This is safe to remove as Firefox handles cleanup automatically
 
-console.log('[DeepWeb Background] Firefox background script ready');
+// Helper functions for enhanced context
+function buildSystemPrompt(context) {
+  let prompt = `You are a helpful AI assistant integrated into Firefox. Help users understand and interact with web pages. Provide clear, concise answers.`;
+  
+  // Add context summary if available
+  if (context.contextSummary) {
+    prompt += `\n\nSession Context: ${context.contextSummary}`;
+  }
+  
+  // Add content type and metadata
+  prompt += `\nContent Type: ${context.contentType || 'unknown'}`;
+  
+  // Add memory insights if available
+  if (context.memory?.knownEntities?.length > 0) {
+    prompt += `\n\nKnown Entities:`;
+    context.memory.knownEntities.slice(0, 5).forEach(entity => {
+      prompt += `\n- ${entity.type}: ${entity.value}`;
+    });
+  }
+  
+  if (context.memory?.establishedFacts?.length > 0) {
+    prompt += `\n\nEstablished Facts:`;
+    context.memory.establishedFacts.slice(0, 5).forEach(fact => {
+      prompt += `\n- ${fact.fact}`;
+    });
+  }
+  
+  if (context.memory?.userPreferences?.length > 0) {
+    prompt += `\n\nUser Preferences:`;
+    context.memory.userPreferences.slice(0, 3).forEach(pref => {
+      prompt += `\n- ${pref.type}: ${pref.value}`;
+    });
+  }
+  
+  // Add cross-page context if available
+  if (context.crossPage?.related?.length > 0) {
+    prompt += `\n\nRelated Pages:`;
+    context.crossPage.related.slice(0, 3).forEach(page => {
+      prompt += `\n- ${page.title} (${page.relationship})`;
+    });
+  }
+  
+  if (context.crossPage?.synthesis?.themes?.length > 0) {
+    prompt += `\n\nCurrent Themes: ${context.crossPage.synthesis.themes.join(', ')}`;
+  }
+  
+  return prompt;
+}
+
+function buildUserMessage(message, context, conversationContext) {
+  // If we have conversation context, just send the message
+  if (conversationContext.length > 0) {
+    return message;
+  }
+  
+  // Otherwise, build message with page context
+  let userMessage = '';
+  
+  // Add relevant sections if available
+  if (context.relevantSections?.length > 0) {
+    userMessage += `Page Content:\n${context.relevantSections.join('\n\n')}\n\n`;
+  } else if (context.content) {
+    userMessage += `${context.content}\n\n`;
+  }
+  
+  // Add page metadata
+  if (!userMessage && (context.url || context.title)) {
+    userMessage += `Page URL: ${context.url}\nPage Title: ${context.title}\n\n`;
+  }
+  
+  userMessage += `User Question: ${message}`;
+  
+  return userMessage;
+}
+
+console.log('[DeepWeb Background] Firefox background script ready with enhanced context support');

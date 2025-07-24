@@ -14,6 +14,8 @@ import MessageSearch from './MessageSearch.js';
 import ImportDialog from './ImportDialog.js';
 import LayoutControls from './LayoutControls.js';
 import ThemeSelector from './ThemeSelector.js';
+import TemplateSelector from './TemplateSelector.js';
+import { ModelParameterControls } from './ModelParameterControls.js';
 import ResizeManager from '../utils/ResizeManager.js';
 import TemplateLoader from '../utils/template-loader.js';
 import DOMUtils from '../utils/dom-utils.js';
@@ -21,6 +23,8 @@ import { ConversationBridge, MessageBridge } from '../utils/conversation-bridge.
 import ThemeManager from '../utils/ThemeManager.js';
 import { animationManager } from '../utils/AnimationManager.js';
 import { responsiveManager } from '../utils/ResponsiveManager.js';
+import { extractChatContext } from '../utils/context-extractor.js';
+import { TemplateManager } from '../../src/intelligence/templates/TemplateManager.js';
 
 export default class ChatContainer extends BaseComponent {
   constructor(options = {}) {
@@ -43,7 +47,9 @@ export default class ChatContainer extends BaseComponent {
       isHeaderCollapsed: false,
       textScale: 'normal',
       pullToRefreshEnabled: true,
-      swipeGesturesEnabled: true
+      swipeGesturesEnabled: true,
+      // Template state
+      isTemplateSelectorVisible: false
     };
     
     // Initialize bridges for communication with background script
@@ -59,6 +65,10 @@ export default class ChatContainer extends BaseComponent {
     
     // Theme selector instance
     this.themeSelector = null;
+    
+    // Template manager
+    this.templateManager = null;
+    this.templateSelector = null;
     
     // Animation settings instance
     this.animationSettings = null;
@@ -261,6 +271,21 @@ export default class ChatContainer extends BaseComponent {
     this.addChild('modelSelector', modelSelector);
     DOMUtils.$('#deepweb-model-container', this.element).appendChild(modelSelector.element);
 
+    // Initialize Model Parameter Controls
+    const modelParameterControls = new ModelParameterControls();
+    await modelParameterControls.init();
+    this.addChild('modelParameterControls', modelParameterControls);
+    DOMUtils.$('#deepweb-model-container', this.element).appendChild(modelParameterControls.element);
+    
+    // Listen for parameter changes
+    modelParameterControls.on('parameterChange', (data) => {
+      this.handleParameterChange(data);
+    });
+    
+    modelParameterControls.on('presetApplied', (data) => {
+      console.log('[DeepWeb] Preset applied:', data);
+    });
+
     // Initialize Message List with message manager and event handlers
     const messageList = new MessageList({
       messageManager: this.messageManager,
@@ -274,11 +299,15 @@ export default class ChatContainer extends BaseComponent {
     // Initialize Input Area
     const inputArea = new InputArea({
       onSendMessage: (message, options) => this.handleSendMessage(message, options),
-      onStreamingToggle: (enabled) => this.handleStreamingToggle(enabled)
+      onStreamingToggle: (enabled) => this.handleStreamingToggle(enabled),
+      onTemplateClick: () => this.toggleTemplateSelector()
     });
     await inputArea.init();
     this.addChild('inputArea', inputArea);
     DOMUtils.$('#deepweb-input-container', this.element).appendChild(inputArea.element);
+    
+    // Initialize template manager
+    await this.initializeTemplateManager();
     
     // Initialize import dialog
     await this.initializeImportDialog();
@@ -420,6 +449,17 @@ export default class ChatContainer extends BaseComponent {
     messageList.addInfoMessage(`🔄 Switched to ${this.getModelName(model)}`);
   }
 
+  handleParameterChange(data) {
+    // Store the parameters for use in API calls
+    this.modelParameters = data.allParameters;
+    console.log('[DeepWeb] Model parameters updated:', data);
+    
+    // Store parameters in browser storage for persistence
+    browser.storage.local.set({ 
+      modelParameters: this.modelParameters 
+    });
+  }
+
   getModelName(modelValue) {
     const names = {
       'deepseek-chat': 'DeepSeek Chat',
@@ -432,6 +472,19 @@ export default class ChatContainer extends BaseComponent {
   async handleSendMessage(message, options = {}) {
     const messageList = this.getChild('messageList');
     const inputArea = this.getChild('inputArea');
+    
+    // Check for template shortcuts
+    if (this.templateManager) {
+      const shortcutMatch = this.templateManager.matchShortcut(message);
+      if (shortcutMatch) {
+        // Show template selector with matched template
+        this.showTemplateSelector();
+        if (this.templateSelector) {
+          this.templateSelector.selectTemplate(shortcutMatch.template.id, shortcutMatch.args);
+        }
+        return;
+      }
+    }
     
     // Ensure we have a conversation
     if (!this.state.currentConversationId) {
@@ -478,18 +531,49 @@ export default class ChatContainer extends BaseComponent {
     );
     
     try {
-      // Send to background
+      // Process message with context manager
+      let contextData = {};
+      if (this.contextManager) {
+        const messageContext = await this.contextManager.processMessage({
+          role: 'user',
+          content: message
+        });
+        
+        // Build comprehensive context
+        const fullContext = await this.contextManager.buildContext({
+          query: message,
+          targetModel: this.state.selectedModel
+        });
+        
+        contextData = {
+          pageContent: fullContext.current?.relevantSections?.join('\n\n') || '',
+          contentType: fullContext.meta?.primaryTopic,
+          relevantSections: fullContext.current?.relevantSections || [],
+          metadata: fullContext.meta || {},
+          memory: fullContext.memory?.insights || {},
+          crossPage: fullContext.crossPage || {},
+          contextSummary: fullContext.summary
+        };
+      } else {
+        // Fallback to smart context extraction
+        const context = await extractChatContext({
+          userQuery: message,
+          model: this.state.selectedModel,
+          includeMetadata: true,
+          maxLength: 4000
+        });
+        contextData = context;
+      }
+      
+      // Send to background with enhanced context and model parameters
       const response = await browser.runtime.sendMessage({
         type: 'chat_request',
         message: message,
         model: this.state.selectedModel,
         conversationId: this.state.currentConversationId,
         stream: false,
-        context: {
-          url: window.location.href,
-          title: document.title,
-          content: document.body.innerText.substring(0, 500)
-        }
+        context: contextData,
+        parameters: this.modelParameters || {}
       });
 
       // Remove loading message
@@ -519,6 +603,14 @@ export default class ChatContainer extends BaseComponent {
         assistantMessage.id = assistantMessageId; // Update with actual ID from storage
         
         messageList.addMessage(assistantMessage);
+        
+        // Process assistant response with context manager
+        if (this.contextManager) {
+          await this.contextManager.processMessage({
+            role: 'assistant',
+            content: response.content
+          });
+        }
         
         // Update conversation timestamp and cost
         await this.conversationManager.updateConversation(this.state.currentConversationId, {
@@ -603,6 +695,14 @@ export default class ChatContainer extends BaseComponent {
               lastMessageAt: new Date().toISOString(),
               totalCost: (conversation.totalCost || 0) + (msg.cost || 0)
             });
+            
+            // Process assistant response with context manager
+            if (this.contextManager) {
+              await this.contextManager.processMessage({
+                role: 'assistant',
+                content: msg.content
+              });
+            }
             
             // Show cost if available
             if (msg.cost && msg.cost > 0) {
@@ -731,18 +831,49 @@ export default class ChatContainer extends BaseComponent {
         }
       };
       
-      // Start streaming request
+      // Process message with context manager
+      let contextData = {};
+      if (this.contextManager) {
+        const messageContext = await this.contextManager.processMessage({
+          role: 'user',
+          content: message
+        });
+        
+        // Build comprehensive context
+        const fullContext = await this.contextManager.buildContext({
+          query: message,
+          targetModel: this.state.selectedModel
+        });
+        
+        contextData = {
+          pageContent: fullContext.current?.relevantSections?.join('\n\n') || '',
+          contentType: fullContext.meta?.primaryTopic,
+          relevantSections: fullContext.current?.relevantSections || [],
+          metadata: fullContext.meta || {},
+          memory: fullContext.memory?.insights || {},
+          crossPage: fullContext.crossPage || {},
+          contextSummary: fullContext.summary
+        };
+      } else {
+        // Fallback to smart context extraction
+        const context = await extractChatContext({
+          userQuery: message,
+          model: this.state.selectedModel,
+          includeMetadata: true,
+          maxLength: 4000
+        });
+        contextData = context;
+      }
+      
+      // Start streaming request with enhanced context and model parameters
       port.postMessage({
         type: 'start_stream',
         message: message,
         model: this.state.selectedModel,
         conversationId: this.state.currentConversationId,
         stream: true,
-        context: {
-          url: window.location.href,
-          title: document.title,
-          content: document.body.innerText.substring(0, 500)
-        }
+        context: contextData,
+        parameters: this.modelParameters || {}
       });
       
       // Handle cancellation
@@ -1744,7 +1875,7 @@ export default class ChatContainer extends BaseComponent {
       down: '↓'
     };
     
-    this.swipeIndicator.innerHTML = icons[direction] || '→';
+    this.swipeIndicator.textContent = icons[direction] || '→';
     this.swipeIndicator.classList.add('show');
     
     setTimeout(() => {
@@ -1913,11 +2044,173 @@ export default class ChatContainer extends BaseComponent {
     return this.state.isMobileMode;
   }
   
+  async initializeTemplateManager() {
+    try {
+      // Initialize template manager
+      this.templateManager = new TemplateManager();
+      await this.templateManager.initialize();
+      
+      // Initialize context manager
+      this.contextManager = new ContextManager();
+      
+      // Initialize page context
+      await this.initializePageContext();
+      
+      // Initialize template selector
+      this.templateSelector = new TemplateSelector({
+        templateManager: this.templateManager,
+        onTemplateSelect: (prompt, template) => this.handleTemplateSelect(prompt, template),
+        onClose: () => this.hideTemplateSelector()
+      });
+      await this.templateSelector.init();
+    } catch (error) {
+      console.error('Failed to initialize template manager:', error);
+    }
+  }
+  
+  /**
+   * Initialize context for current page
+   */
+  async initializePageContext() {
+    try {
+      if (!this.contextManager) return;
+      
+      const pageData = {
+        url: window.location.href,
+        title: document.title,
+        document: document
+      };
+      
+      const contextResult = await this.contextManager.initializePage(pageData);
+      
+      // Show suggestions if available
+      if (contextResult.suggestions?.length > 0) {
+        this.showContextSuggestions(contextResult.suggestions);
+      }
+      
+      // Check for research mode
+      if (contextResult.fullContext?.crossPage?.session?.hasActiveResearch) {
+        this.showResearchModeIndicator();
+      }
+    } catch (error) {
+      console.error('[DeepWeb] Failed to initialize page context:', error);
+    }
+  }
+  
+  /**
+   * Show context-based suggestions
+   * @param {Array} suggestions - Suggestions from context manager
+   */
+  showContextSuggestions(suggestions) {
+    const messageList = this.getChild('messageList');
+    if (!messageList) return;
+    
+    // Show top suggestions
+    suggestions.slice(0, 3).forEach(suggestion => {
+      let icon = '💡';
+      switch (suggestion.type) {
+        case 'topic': icon = '🔍'; break;
+        case 'navigation': icon = '🧭'; break;
+        case 'answer': icon = '📚'; break;
+        case 'research': icon = '🔬'; break;
+      }
+      
+      messageList.addInfoMessage(`${icon} ${suggestion.content}`);
+    });
+  }
+  
+  /**
+   * Show research mode indicator
+   */
+  showResearchModeIndicator() {
+    const header = this.getChild('header');
+    if (!header || !header.element) return;
+    
+    // Add research mode indicator to header
+    const indicator = document.createElement('div');
+    indicator.className = 'deepweb-research-indicator';
+    indicator.innerHTML = '🔬 Research Mode';
+    indicator.style.cssText = `
+      padding: 4px 8px;
+      background: var(--theme-primary, #1976d2);
+      color: white;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 8px;
+    `;
+    
+    const headerContent = header.element.querySelector('.deepweb-header-content');
+    if (headerContent) {
+      headerContent.appendChild(indicator);
+    }
+  }
+  
+  toggleTemplateSelector() {
+    if (this.state.isTemplateSelectorVisible) {
+      this.hideTemplateSelector();
+    } else {
+      this.showTemplateSelector();
+    }
+  }
+  
+  async showTemplateSelector() {
+    if (!this.templateSelector || this.state.isTemplateSelectorVisible) return;
+    
+    this.state.isTemplateSelectorVisible = true;
+    
+    // Get current context
+    const context = await extractChatContext({
+      userQuery: '',
+      model: this.state.selectedModel
+    });
+    
+    // Add template selector to container
+    const container = DOMUtils.$('#deepweb-template-selector-container', this.element);
+    if (!container) {
+      // Create container if it doesn't exist
+      const newContainer = document.createElement('div');
+      newContainer.id = 'deepweb-template-selector-container';
+      this.element.appendChild(newContainer);
+      newContainer.appendChild(this.templateSelector.element);
+    } else {
+      container.appendChild(this.templateSelector.element);
+    }
+    
+    // Open selector with context
+    await this.templateSelector.open(context);
+  }
+  
+  hideTemplateSelector() {
+    if (!this.templateSelector || !this.state.isTemplateSelectorVisible) return;
+    
+    this.state.isTemplateSelectorVisible = false;
+    this.templateSelector.element.remove();
+  }
+  
+  handleTemplateSelect(prompt, template) {
+    // Insert prompt into input area
+    const inputArea = this.getChild('inputArea');
+    if (inputArea) {
+      inputArea.setValue(prompt);
+      inputArea.focus();
+    }
+    
+    // Track template usage
+    if (template && this.templateManager) {
+      this.templateManager.trackUsage(template.id);
+    }
+  }
+  
   // Cleanup
   destroy() {
     // Clean up responsive event handlers
     this.responsiveCleanup.forEach(cleanup => cleanup());
     this.responsiveCleanup.length = 0;
+    
+    // Clean up context manager
+    if (this.contextManager) {
+      this.contextManager.clearAllContext();
+    }
     
     // Call parent destroy
     super.destroy();

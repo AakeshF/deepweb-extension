@@ -6,6 +6,7 @@
 import BaseComponent from './BaseComponent.js';
 import DOMUtils from '../utils/dom-utils.js';
 import MarkdownRenderer from '../utils/markdown-renderer.js';
+import { SecureMarkdownRenderer } from '../../src/security/SecureMarkdownRenderer.js';
 
 export default class Message extends BaseComponent {
   constructor(options = {}) {
@@ -154,10 +155,11 @@ export default class Message extends BaseComponent {
       class: 'deepweb-message-content'
     });
     
-    // Use MarkdownRenderer for assistant messages, plain text for user messages
+    // Use SecureMarkdownRenderer for assistant messages, plain text for user messages
     if (this.message.role === 'assistant') {
-      // Apply markdown rendering for assistant messages
-      contentDiv.innerHTML = this.markdownRenderer.render(this.message.content);
+      // Apply secure markdown rendering for assistant messages
+      const secureRenderer = new SecureMarkdownRenderer();
+      secureRenderer.render(this.message.content, contentDiv);
       contentDiv.classList.add('md-content');
     } else {
       // Keep user messages as plain text
@@ -358,7 +360,17 @@ export default class Message extends BaseComponent {
         transition: 'background 0.2s'
       });
 
-      item.innerHTML = `<span>${action.icon}</span><span>${action.text}</span>`;
+      // Create icon span
+      const iconSpan = document.createElement('span');
+      iconSpan.textContent = action.icon;
+      
+      // Create text span
+      const textSpan = document.createElement('span');
+      textSpan.textContent = action.text;
+      
+      // Append spans to item
+      item.appendChild(iconSpan);
+      item.appendChild(textSpan);
 
       item.addEventListener('mouseenter', () => {
         item.style.background = action.danger ? '#ffebee' : '#f5f5f5';

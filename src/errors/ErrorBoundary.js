@@ -166,7 +166,8 @@ export class ErrorBoundary {
     // Add content
     const content = this.fallbackUI(errorResult);
     if (typeof content === 'string') {
-      fallback.innerHTML = DOMUtils.sanitizeText(content);
+      // Use textContent for string content (safer than innerHTML)
+      fallback.textContent = content;
     } else {
       fallback.appendChild(content);
     }

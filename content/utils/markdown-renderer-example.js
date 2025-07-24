@@ -4,6 +4,7 @@
  */
 
 import MarkdownRenderer from './markdown-renderer.js';
+import { DOMSecurity } from '../../src/security/DOMSecurity.js';
 
 // Example 1: Basic usage with default options
 const basicRenderer = new MarkdownRenderer();
@@ -228,7 +229,9 @@ function integrateWithChat() {
         messageElement.className = 'chat-message';
         
         if (message.role === 'assistant') {
-            messageElement.innerHTML = renderer.render(message.content);
+            // Use DOMSecurity to safely append rendered markdown
+            const renderedContent = renderer.render(message.content);
+            DOMSecurity.appendHTML(messageElement, renderedContent, false); // Already sanitized by renderer
         } else {
             // User messages - just escape HTML
             messageElement.textContent = message.content;

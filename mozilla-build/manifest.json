@@ -1,0 +1,63 @@
+{
+  "manifest_version": 2,
+  "name": "DeepWeb AI Assistant",
+  "version": "1.0.0",
+  "description": "Your AI companion for any webpage - Powered by DeepSeek",
+  
+  "icons": {
+    "16": "icons/DeepWeb_16x16.png",
+    "48": "icons/DeepWeb_48x48.png",
+    "128": "icons/DeepWeb_128x128.png"
+  },
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "contextMenus",
+    "https://api.deepseek.com/*",
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*"
+  ],
+  
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  
+  "browser_action": {
+    "default_title": "Toggle DeepWeb Assistant",
+    "default_icon": {
+      "16": "icons/DeepWeb_16x16.png",
+      "48": "icons/DeepWeb_48x48.png"
+    },
+    "default_popup": "popup/popup-secure.html"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content-firefox.js"],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  
+  "commands": {
+    "toggle-chat": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Toggle the AI chat interface"
+    }
+  },
+  
+  "content_security_policy": "script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.deepseek.com https://api.openai.com https://api.anthropic.com",
+  
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "deepweb@assistant.ai",
+      "strict_min_version": "78.0"
+    }
+  }
+}

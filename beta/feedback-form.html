@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepWeb Beta Feedback Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-section h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input[type="radio"],
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .rating-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .rating-item {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .rating-item input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .rating-item label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0;
+        }
+        
+        .rating-item input:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .rating-item:hover label {
+            border-color: #667eea;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .required {
+            color: #e53e3e;
+        }
+        
+        .success-message {
+            display: none;
+            background: #48bb78;
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .rating-group {
+                flex-wrap: wrap;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 DeepWeb Beta Feedback</h1>
+            <p>Help us make DeepWeb the best AI assistant for Firefox!</p>
+        </div>
+        
+        <form id="beta-feedback-form">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2>Basic Information</h2>
+                
+                <div class="form-group">
+                    <label for="tester-id">Tester ID <span class="required">*</span></label>
+                    <input type="text" id="tester-id" name="tester_id" required>
+                    <p class="help-text">Your unique beta tester ID from the invitation email</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="testing-week">Testing Week <span class="required">*</span></label>
+                    <select id="testing-week" name="testing_week" required>
+                        <option value="">Select week</option>
+                        <option value="week1">Week 1 - Core Features</option>
+                        <option value="week2">Week 2 - Advanced Features</option>
+                        <option value="week3">Week 3 - Edge Cases</option>
+                        <option value="week4">Week 4 - Polish</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Overall Experience -->
+            <div class="form-section">
+                <h2>Overall Experience</h2>
+                
+                <div class="form-group">
+                    <label>How would you rate your overall experience with DeepWeb? <span class="required">*</span></label>
+                    <div class="rating-group">
+                        <div class="rating-item">
+                            <input type="radio" id="rating-1" name="overall_rating" value="1" required>
+                            <label for="rating-1">1</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-2" name="overall_rating" value="2">
+                            <label for="rating-2">2</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-3" name="overall_rating" value="3">
+                            <label for="rating-3">3</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-4" name="overall_rating" value="4">
+                            <label for="rating-4">4</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-5" name="overall_rating" value="5">
+                            <label for="rating-5">5</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-6" name="overall_rating" value="6">
+                            <label for="rating-6">6</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-7" name="overall_rating" value="7">
+                            <label for="rating-7">7</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-8" name="overall_rating" value="8">
+                            <label for="rating-8">8</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-9" name="overall_rating" value="9">
+                            <label for="rating-9">9</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="rating-10" name="overall_rating" value="10">
+                            <label for="rating-10">10</label>
+                        </div>
+                    </div>
+                    <p class="help-text">1 = Very Poor, 10 = Excellent</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recommendation">How likely are you to recommend DeepWeb to a friend? <span class="required">*</span></label>
+                    <select id="recommendation" name="recommendation" required>
+                        <option value="">Select likelihood</option>
+                        <option value="definitely">Definitely would</option>
+                        <option value="probably">Probably would</option>
+                        <option value="neutral">Not sure</option>
+                        <option value="probably_not">Probably not</option>
+                        <option value="definitely_not">Definitely not</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="usage-frequency">How often did you use DeepWeb this week? <span class="required">*</span></label>
+                    <select id="usage-frequency" name="usage_frequency" required>
+                        <option value="">Select frequency</option>
+                        <option value="multiple_daily">Multiple times per day</option>
+                        <option value="daily">Once per day</option>
+                        <option value="few_times">A few times this week</option>
+                        <option value="once">Once this week</option>
+                        <option value="not_used">Haven't used it</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Feature Feedback -->
+            <div class="form-section">
+                <h2>Feature Feedback</h2>
+                
+                <div class="form-group">
+                    <label>Which features did you test this week? <span class="required">*</span></label>
+                    <div class="feature-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-chat" name="features_tested" value="chat">
+                            <label for="feature-chat">Basic Chat</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-models" name="features_tested" value="model_switching">
+                            <label for="feature-models">Model Switching</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-context" name="features_tested" value="context_extraction">
+                            <label for="feature-context">Context Extraction</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-templates" name="features_tested" value="templates">
+                            <label for="feature-templates">Templates</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-shortcuts" name="features_tested" value="shortcuts">
+                            <label for="feature-shortcuts">Keyboard Shortcuts</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-export" name="features_tested" value="export">
+                            <label for="feature-export">Export</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-themes" name="features_tested" value="themes">
+                            <label for="feature-themes">Themes</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="feature-performance" name="features_tested" value="performance">
+                            <label for="feature-performance">Performance</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="favorite-feature">What's your favorite feature so far?</label>
+                    <input type="text" id="favorite-feature" name="favorite_feature" placeholder="e.g., Quick summarization, Model switching...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="missing-feature">What feature do you wish DeepWeb had?</label>
+                    <textarea id="missing-feature" name="missing_feature" placeholder="Describe a feature you'd like to see..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Issues & Bugs -->
+            <div class="form-section">
+                <h2>Issues & Bugs</h2>
+                
+                <div class="form-group">
+                    <label>Did you encounter any bugs this week?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="bugs-yes" name="encountered_bugs" value="yes">
+                            <label for="bugs-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="bugs-no" name="encountered_bugs" value="no">
+                            <label for="bugs-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bug-description">If yes, please describe the most significant bug:</label>
+                    <textarea id="bug-description" name="bug_description" placeholder="What happened? What were you doing when it occurred?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="performance-issues">Did you experience any performance issues?</label>
+                    <textarea id="performance-issues" name="performance_issues" placeholder="Slow loading, high memory usage, freezing, etc."></textarea>
+                </div>
+            </div>
+            
+            <!-- Usability -->
+            <div class="form-section">
+                <h2>Usability</h2>
+                
+                <div class="form-group">
+                    <label>How easy was DeepWeb to use?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="ease-very-easy" name="ease_of_use" value="very_easy">
+                            <label for="ease-very-easy">Very Easy</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="ease-easy" name="ease_of_use" value="easy">
+                            <label for="ease-easy">Easy</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="ease-neutral" name="ease_of_use" value="neutral">
+                            <label for="ease-neutral">Neutral</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="ease-difficult" name="ease_of_use" value="difficult">
+                            <label for="ease-difficult">Difficult</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="ease-very-difficult" name="ease_of_use" value="very_difficult">
+                            <label for="ease-very-difficult">Very Difficult</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confusing-aspects">What aspects were confusing or difficult to use?</label>
+                    <textarea id="confusing-aspects" name="confusing_aspects" placeholder="List any UI elements, features, or workflows that were unclear..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="improvement-suggestions">How could we improve the user experience?</label>
+                    <textarea id="improvement-suggestions" name="improvement_suggestions" placeholder="Your suggestions for making DeepWeb better..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Comparison -->
+            <div class="form-section">
+                <h2>Comparison</h2>
+                
+                <div class="form-group">
+                    <label for="other-ai-tools">What other AI tools do you currently use?</label>
+                    <input type="text" id="other-ai-tools" name="other_ai_tools" placeholder="ChatGPT web, Claude.ai, Copilot, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="deepweb-advantages">What does DeepWeb do better than these tools?</label>
+                    <textarea id="deepweb-advantages" name="deepweb_advantages" placeholder="Integration with browser, speed, features, etc."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deepweb-disadvantages">What do other tools do better than DeepWeb?</label>
+                    <textarea id="deepweb-disadvantages" name="deepweb_disadvantages" placeholder="Features we're missing, better UI, etc."></textarea>
+                </div>
+            </div>
+            
+            <!-- Additional Feedback -->
+            <div class="form-section">
+                <h2>Additional Feedback</h2>
+                
+                <div class="form-group">
+                    <label for="additional-comments">Any other comments or feedback?</label>
+                    <textarea id="additional-comments" name="additional_comments" rows="5" placeholder="Anything else you'd like to share with the DeepWeb team..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Would you like to participate in a follow-up interview?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="interview-yes" name="follow_up_interview" value="yes">
+                            <label for="interview-yes">Yes (15-min video call)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="interview-no" name="follow_up_interview" value="no">
+                            <label for="interview-no">No thanks</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="btn" id="submit-btn">Submit Feedback</button>
+                <p class="help-text">Your feedback is automatically saved as you type</p>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                ✅ Thank you! Your feedback has been submitted successfully.
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Auto-save functionality
+        const form = document.getElementById('beta-feedback-form');
+        const inputs = form.querySelectorAll('input, textarea, select');
+        const STORAGE_KEY = 'deepweb_beta_feedback';
+        
+        // Load saved data
+        function loadSavedData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const element = form.elements[key];
+                    if (element) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            element.checked = data[key];
+                        } else {
+                            element.value = data[key];
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            const data = {};
+            inputs.forEach(input => {
+                if (input.name) {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        if (input.checked) {
+                            data[input.name] = input.value;
+                        }
+                    } else {
+                        data[input.name] = input.value;
+                    }
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+        
+        // Auto-save on input
+        inputs.forEach(input => {
+            input.addEventListener('input', saveData);
+            input.addEventListener('change', saveData);
+        });
+        
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Collect form data
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Add metadata
+            data.timestamp = new Date().toISOString();
+            data.beta_version = 'DeepWeb Beta Integration'; // This would be dynamically set
+            data.user_agent = navigator.userAgent;
+            
+            // In production, this would send to your server
+            console.log('Feedback data:', data);
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Clear saved data
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // Show success message
+                document.getElementById('success-message').style.display = 'block';
+                form.style.display = 'none';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1000);
+        });
+        
+        // Load saved data on page load
+        loadSavedData();
+    </script>
+</body>
+</html>

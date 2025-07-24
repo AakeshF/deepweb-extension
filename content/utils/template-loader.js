@@ -3,6 +3,8 @@
  * Handles loading and caching of HTML templates
  */
 
+import { DOMSecurity } from '../../src/security/DOMSecurity.js';
+
 class TemplateLoader {
   constructor() {
     this.cache = new Map();
@@ -69,6 +71,8 @@ class TemplateLoader {
    */
   parseTemplate(html) {
     const template = document.createElement('template');
+    // Safe to use innerHTML here as templates are loaded from extension's own files
+    // and not from user input. The template element provides additional sandboxing.
     template.innerHTML = html.trim();
     return template.content;
   }

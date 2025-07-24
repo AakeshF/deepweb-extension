@@ -505,17 +505,34 @@ export default class AnimationSettings extends BaseComponent {
     this.setState({ performanceReport: report });
     
     if (this.performanceInfo) {
-      this.performanceInfo.innerHTML = `
-        <div style="margin-bottom: 8px">
-          <strong>Total Animations:</strong> ${report.totalAnimations}
-        </div>
-        <div style="margin-bottom: 8px">
-          <strong>Frame Drops:</strong> ${report.frameDrops} (${report.dropRate})
-        </div>
-        <div style="color: ${parseFloat(report.dropRate) > 10 ? 'var(--theme-warning)' : 'var(--theme-success)'}">
-          ${report.recommendation}
-        </div>
-      `;
+      // Clear existing content
+      this.performanceInfo.textContent = '';
+      
+      // Create total animations div
+      const totalDiv = document.createElement('div');
+      totalDiv.style.marginBottom = '8px';
+      const totalStrong = document.createElement('strong');
+      totalStrong.textContent = 'Total Animations:';
+      totalDiv.appendChild(totalStrong);
+      totalDiv.appendChild(document.createTextNode(` ${report.totalAnimations}`));
+      
+      // Create frame drops div
+      const dropsDiv = document.createElement('div');
+      dropsDiv.style.marginBottom = '8px';
+      const dropsStrong = document.createElement('strong');
+      dropsStrong.textContent = 'Frame Drops:';
+      dropsDiv.appendChild(dropsStrong);
+      dropsDiv.appendChild(document.createTextNode(` ${report.frameDrops} (${report.dropRate})`));
+      
+      // Create recommendation div
+      const recommendationDiv = document.createElement('div');
+      recommendationDiv.textContent = report.recommendation;
+      recommendationDiv.style.color = parseFloat(report.dropRate) > 10 ? 'var(--theme-warning)' : 'var(--theme-success)';
+      
+      // Append all elements
+      this.performanceInfo.appendChild(totalDiv);
+      this.performanceInfo.appendChild(dropsDiv);
+      this.performanceInfo.appendChild(recommendationDiv);
     }
   }
   

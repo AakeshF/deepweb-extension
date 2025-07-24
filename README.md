@@ -5,7 +5,8 @@ A powerful AI assistant for Firefox that enhances your web browsing experience w
 ## ✨ Features
 
 - **Intelligent Web Assistant**: Get AI-powered insights about any webpage
-- **Context-Aware Responses**: AI understands the content you're viewing
+- **Smart Context Extraction**: Advanced algorithms analyze page structure for optimal AI understanding
+- **Context-Aware Responses**: AI understands the content you're viewing with intelligent relevance scoring
 - **Multiple AI Models**: Choose between DeepSeek Chat and DeepSeek Reasoner
 - **Privacy-Focused**: Your data stays local, only queries are sent to AI
 - **Firefox-Optimized**: Built specifically for Firefox with Manifest V2
@@ -20,7 +21,7 @@ A powerful AI assistant for Firefox that enhances your web browsing experience w
 
 2. **Manual Installation** (Development)
    ```bash
-   git clone https://github.com/yourusername/deepweb-extension.git
+   git clone https://github.com/AakeshF/deepweb-extension.git
    cd deepweb-extension
    npm install
    npm run build
@@ -157,7 +158,7 @@ See [CONTRIBUTING.md](#) for detailed guidelines.
 
 ### Getting Help
 
-- Check [Issues](https://github.com/yourusername/deepweb-extension/issues)
+- Check [Issues](https://github.com/AakeshF/deepweb-extension/issues)
 - Read the [FAQ](#)
 - Contact support
 

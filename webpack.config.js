@@ -13,9 +13,9 @@ module.exports = (env, argv) => {
     devtool: isDevelopment ? 'source-map' : false,
     
     entry: {
-      'background': './src/background/index.js',
-      'content/content-firefox': './src/content/index.js',
-      'popup/popup-firefox': './src/popup/index.js'
+      'background': './background-firefox.js',
+      'content/content-firefox': './content/content-firefox.js',
+      'popup/popup-firefox': './popup/popup-firefox.js'
     },
     
     output: {
@@ -46,7 +46,10 @@ module.exports = (env, argv) => {
           { from: 'manifest.json' },
           { from: 'icons', to: 'icons' },
           { from: 'popup/popup.html', to: 'popup' },
-          { from: 'content/styles-secure.css', to: 'content' },
+          { from: 'popup/popup-secure.html', to: 'popup' },
+          { from: 'content/styles-modular.css', to: 'content' },
+          { from: 'content/templates', to: 'content/templates' },
+          { from: 'content/styles', to: 'content/styles' },
           { from: '_locales', to: '_locales', noErrorOnMissing: true }
         ]
       })

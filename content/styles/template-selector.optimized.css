@@ -1,0 +1,34 @@
+/**
+ * Template Selector Styles
+ */
+
+.deepweb-template-selector {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+/* Header */
+
+/* Search */
+
+/* Categories */
+
+/* Template List */
+
+/* Empty State */
+
+/* Loading */
+
+/* Footer */
+
+/* Mobile Responsive */
+
+/* Animations */

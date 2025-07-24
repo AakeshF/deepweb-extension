@@ -1,0 +1,54 @@
+/* Chat Container Styles */
+.deepweb-sidebar {
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.deepweb-sidebar.collapsed {
+  transform: translateX(-100%);
+  width: 0 !important;
+}
+
+.deepweb-main-chat {
+  transition: margin-left 0.3s ease;
+}
+
+/* Scrollbar styles for sidebar and messages */
+.deepweb-sidebar::-webkit-scrollbar,
+#deepweb-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.deepweb-sidebar::-webkit-scrollbar-track,
+#deepweb-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.deepweb-sidebar::-webkit-scrollbar-thumb,
+#deepweb-messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.deepweb-sidebar::-webkit-scrollbar-thumb:hover,
+#deepweb-messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #deepweb-chat-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  .deepweb-sidebar {
+    position: absolute;
+    z-index: 10;
+    height: 100%;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+}

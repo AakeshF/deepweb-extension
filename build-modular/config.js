@@ -70,7 +70,8 @@ const DEEPWEB_CONFIG = {
     theme: 'light',
     fontSize: 'medium',
     layout: 'corner',
-    streamResponses: true
+    streamResponses: true,
+    streamingEnabled: true
   }
 };
 

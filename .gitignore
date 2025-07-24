@@ -41,6 +41,7 @@ docs/
 # OS generated files
 Thumbs.db
 .DS_Store
+*Zone.Identifier
 
 # Firefox specific
 web-ext-artifacts/
@@ -48,3 +49,7 @@ web-ext-artifacts/
 # Development
 .cache/
 .parcel-cache/
+
+# Build artifacts
+bundle-analysis-report.json
+*.bak

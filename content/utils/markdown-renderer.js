@@ -135,6 +135,8 @@ class MarkdownRenderer {
 
         // Create a temporary container to parse HTML
         const temp = document.createElement('div');
+        // Safe to use innerHTML here as this is part of the sanitization process
+        // The content will be thoroughly cleaned before being returned
         temp.innerHTML = html;
 
         // Recursively sanitize all elements

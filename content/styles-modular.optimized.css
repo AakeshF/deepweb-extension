@@ -1,0 +1,1439 @@
+/**
+ * DeepWeb Extension Modular Styles
+ * Secure CSS without inline styles
+ */
+
+/* CSS Custom Properties for Theming */
+:root {
+  /* Default theme variables - will be overridden by ThemeManager */
+  --theme-primary: #1976d2;
+  --theme-accent: #9c27b0;
+  --theme-error: #f44336;
+  --theme-warning: #ff9800;
+  --theme-info: #2196f3;
+  --theme-success: #4caf50;
+  --theme-background-default: #ffffff;
+  --theme-background-paper: #f5f5f5;
+  --theme-background-elevated: #fafafa;
+  --theme-surface-default: #ffffff;
+  --theme-surface-variant: #f0f0f0;
+  --theme-text-primary: rgba(0, 0, 0, 0.87);
+  --theme-text-secondary: rgba(0, 0, 0, 0.6);
+  --theme-divider: rgba(0, 0, 0, 0.12);
+  --theme-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* Theme transition styles */
+.theme-transitioning,
+.theme-transitioning * {
+  transition: background-color 300ms ease,
+              color 300ms ease,
+              border-color 300ms ease,
+              box-shadow 300ms ease !important;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .theme-transitioning,
+  .theme-transitioning * {
+    transition: none !important;
+  }
+}
+
+/* Theme-specific adjustments */
+
+/* Main container */
+#deepweb-chat-root {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 40px) !important;
+  max-height: 600px !important;
+  background: var(--theme-background-default) !important;
+  border: 1px solid var(--theme-divider) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px var(--theme-shadow) !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: var(--theme-text-primary) !important;
+}
+
+/* Header */
+.deepweb-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 16px !important;
+  background: var(--theme-background-paper) !important;
+  border-bottom: 1px solid var(--theme-divider) !important;
+  border-radius: 12px 12px 0 0 !important;
+  user-select: none !important;
+}
+
+.deepweb-header-title {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: var(--theme-text-primary) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.deepweb-logo {
+  width: 24px !important;
+  height: 24px !important;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%) !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+}
+
+.deepweb-header-controls {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.deepweb-control-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  color: var(--theme-text-secondary) !important;
+  border-radius: 4px !important;
+  transition: background 0.2s !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.deepweb-control-btn:hover {
+  background: var(--theme-surface-variant) !important;
+}
+
+/* Model selector */
+.deepweb-model-selector {
+  padding: 8px 16px !important;
+  background: var(--theme-background-elevated) !important;
+  border-bottom: 1px solid var(--theme-divider) !important;
+}
+
+.deepweb-model-select {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  border: 1px solid var(--theme-divider) !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  background: var(--theme-surface-default) !important;
+  cursor: pointer !important;
+  color: var(--theme-text-primary) !important;
+  font-family: inherit !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+}
+
+.deepweb-model-select:focus {
+  border-color: var(--theme-primary) !important;
+}
+
+/* Messages area */
+.deepweb-messages {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+  max-height: 350px !important;
+  min-height: 200px !important;
+  background: var(--theme-background-elevated) !important;
+}
+
+/* Welcome message */
+.deepweb-welcome-message {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%) !important;
+  color: white !important;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+  text-align: center !important;
+}
+
+.deepweb-welcome-text {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.deepweb-welcome-subtext {
+  font-size: 12px !important;
+  opacity: 0.9 !important;
+  margin-top: 4px !important;
+}
+
+/* Message styles */
+.deepweb-message {
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  line-height: 1.5 !important;
+}
+
+.deepweb-message-user {
+  background: var(--theme-info) !important;
+  color: white !important;
+  margin-left: 60px !important;
+  margin-right: 0 !important;
+  border: 1px solid transparent !important;
+  text-align: right !important;
+  opacity: 0.9 !important;
+}
+
+.deepweb-message-assistant {
+  background: var(--theme-surface-default) !important;
+  color: var(--theme-text-primary) !important;
+  margin-left: 0 !important;
+  margin-right: 60px !important;
+  border: 1px solid var(--theme-divider) !important;
+}
+
+.deepweb-message-error {
+  background: var(--theme-error) !important;
+  color: white !important;
+  border: 1px solid transparent !important;
+  margin: 0 20px !important;
+  opacity: 0.9 !important;
+}
+
+.deepweb-message-info {
+  background: var(--theme-accent) !important;
+  color: white !important;
+  font-size: 12px !important;
+  text-align: center !important;
+  margin: 0 40px !important;
+  border: 1px solid transparent !important;
+  opacity: 0.8 !important;
+}
+
+.deepweb-message-loading {
+  background: var(--theme-surface-variant) !important;
+  color: var(--theme-text-secondary) !important;
+  margin-left: 0 !important;
+  margin-right: 60px !important;
+  border: 1px solid var(--theme-divider) !important;
+  font-style: italic !important;
+}
+
+/* Input area */
+.deepweb-input-area {
+  padding: 16px !important;
+  background: var(--theme-background-paper) !important;
+  border-top: 1px solid var(--theme-divider) !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+.deepweb-input-container {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.deepweb-input {
+  flex: 1 !important;
+  padding: 10px 14px !important;
+  border: 1px solid var(--theme-divider) !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+  font-family: inherit !important;
+  background: var(--theme-surface-default) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.deepweb-input:focus {
+  border-color: var(--theme-primary) !important;
+}
+
+.deepweb-send-btn {
+  padding: 10px 20px !important;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  min-width: 70px !important;
+  transition: transform 0.1s, box-shadow 0.2s !important;
+}
+
+.deepweb-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px var(--theme-shadow) !important;
+}
+
+.deepweb-send-btn:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* Rate limit warning */
+.deepweb-rate-limit {
+  margin-top: 8px !important;
+  padding: 8px 12px !important;
+  background: var(--theme-warning) !important;
+  color: white !important;
+  font-size: 13px !important;
+  text-align: center !important;
+  border-radius: 6px !important;
+  opacity: 0.9 !important;
+}
+
+/* Scrollbar styling */
+.deepweb-messages::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.deepweb-messages::-webkit-scrollbar-track {
+  background: var(--theme-background-paper) !important;
+  border-radius: 4px !important;
+}
+
+.deepweb-messages::-webkit-scrollbar-thumb {
+  background: var(--theme-text-secondary) !important;
+  border-radius: 4px !important;
+}
+
+.deepweb-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text-primary) !important;
+}
+
+/* Minimized state */
+#deepweb-chat-root.deepweb-minimized {
+  height: 60px !important;
+}
+
+#deepweb-chat-root.deepweb-minimized .deepweb-messages,
+#deepweb-chat-root.deepweb-minimized .deepweb-input-area,
+#deepweb-chat-root.deepweb-minimized .deepweb-model-selector {
+  display: none !important;
+}
+
+/* Hidden state */
+#deepweb-chat-root.deepweb-hidden {
+  display: none !important;
+}
+
+/* Animation classes */
+@keyframes deepweb-slide-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes deepweb-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.deepweb-animate-slide-in {
+  animation: deepweb-slide-in 0.3s ease-out !important;
+}
+
+.deepweb-animate-fade-in {
+  animation: deepweb-fade-in 0.2s ease-in !important;
+}
+
+/* Streaming Message Styles */
+
+/* Import/Export Dialog Styles */
+.deepweb-import-dialog-overlay,
+.deepweb-export-dialog-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10000 !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.deepweb-import-dialog,
+.deepweb-export-dialog {
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  width: 90% !important;
+  max-width: 600px !important;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transform: scale(0.95) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* File Input Styles */
+
+/* Progress Bar Styles */
+
+/* Import Button in Header */
+.deepweb-import-btn {
+  padding: 8px 12px !important;
+  fontSize: 16px !important;
+  color: #666 !important;
+  backgroundColor: #f5f5f5 !important;
+  border: 1px solid #e0e0e0 !important;
+  borderRadius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.deepweb-import-btn:hover {
+  backgroundColor: #e0e0e0 !important;
+  borderColor: #ccc !important;
+}
+
+/* ================================ */
+/* Layout Controls & Resize Styles  */
+/* ================================ */
+
+/* Resize Handles */
+.deepweb-resize-handle {
+  position: absolute !important;
+  background: transparent !important;
+  z-index: 10 !important;
+}
+
+.deepweb-resize-handle:hover {
+  background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.deepweb-resize-handle-n {
+  top: -4px !important;
+  left: 10px !important;
+  right: 10px !important;
+  height: 8px !important;
+  cursor: ns-resize !important;
+}
+
+.deepweb-resize-handle-s {
+  bottom: -4px !important;
+  left: 10px !important;
+  right: 10px !important;
+  height: 8px !important;
+  cursor: ns-resize !important;
+}
+
+.deepweb-resize-handle-e {
+  top: 10px !important;
+  right: -4px !important;
+  bottom: 10px !important;
+  width: 8px !important;
+  cursor: ew-resize !important;
+}
+
+.deepweb-resize-handle-w {
+  top: 10px !important;
+  left: -4px !important;
+  bottom: 10px !important;
+  width: 8px !important;
+  cursor: ew-resize !important;
+}
+
+.deepweb-resize-handle-ne {
+  top: -4px !important;
+  right: -4px !important;
+  width: 12px !important;
+  height: 12px !important;
+  cursor: nesw-resize !important;
+  border-radius: 0 12px 0 0 !important;
+}
+
+.deepweb-resize-handle-nw {
+  top: -4px !important;
+  left: -4px !important;
+  width: 12px !important;
+  height: 12px !important;
+  cursor: nwse-resize !important;
+  border-radius: 12px 0 0 0 !important;
+}
+
+.deepweb-resize-handle-se {
+  bottom: -4px !important;
+  right: -4px !important;
+  width: 12px !important;
+  height: 12px !important;
+  cursor: nwse-resize !important;
+  border-radius: 0 0 12px 0 !important;
+}
+
+.deepweb-resize-handle-sw {
+  bottom: -4px !important;
+  left: -4px !important;
+  width: 12px !important;
+  height: 12px !important;
+  cursor: nesw-resize !important;
+  border-radius: 0 0 0 12px !important;
+}
+
+/* Visual resize indicator on SE corner */
+.deepweb-resize-handle-se::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 2px !important;
+  right: 2px !important;
+  width: 8px !important;
+  height: 8px !important;
+  background: linear-gradient(135deg, transparent 50%, #d0d0d0 50%) !important;
+  border-radius: 0 0 8px 0 !important;
+}
+
+/* Dragging states */
+
+/* Snap indicators */
+.deepweb-snap-indicator {
+  position: fixed !important;
+  background: rgba(102, 126, 234, 0.2) !important;
+  border: 2px dashed #667eea !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Layout control panel */
+.deepweb-layout-controls {
+  position: absolute !important;
+  top: 48px !important;
+  right: 16px !important;
+  background: white !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  z-index: 1000 !important;
+  min-width: 280px !important;
+  font-size: 14px !important;
+}
+
+.deepweb-layout-section {
+  margin-bottom: 16px !important;
+}
+
+.deepweb-section-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #666 !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Layout preset buttons */
+.deepweb-layout-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+}
+
+.deepweb-layout-btn {
+  padding: 8px 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  background: white !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+.deepweb-layout-btn:hover {
+  background: #f8f9fa !important;
+  border-color: #667eea !important;
+}
+
+.deepweb-layout-btn.active {
+  background: #667eea !important;
+  color: white !important;
+  border-color: #667eea !important;
+}
+
+/* Position selector */
+.deepweb-position-select {
+  width: 100% !important;
+  padding: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  background: white !important;
+  cursor: pointer !important;
+}
+
+/* Opacity slider */
+.deepweb-opacity-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.deepweb-opacity-slider {
+  flex: 1 !important;
+  height: 4px !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background: #e0e0e0 !important;
+  border-radius: 2px !important;
+  outline: none !important;
+}
+
+.deepweb-opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: #667eea !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  transition: transform 0.2s !important;
+}
+
+.deepweb-opacity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2) !important;
+}
+
+.deepweb-opacity-slider::-moz-range-thumb {
+  width: 16px !important;
+  height: 16px !important;
+  background: #667eea !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: transform 0.2s !important;
+}
+
+.deepweb-opacity-slider::-moz-range-thumb:hover {
+  transform: scale(1.2) !important;
+}
+
+.deepweb-opacity-value {
+  min-width: 40px !important;
+  text-align: right !important;
+  font-size: 13px !important;
+  color: #666 !important;
+}
+
+/* Action buttons */
+.deepweb-action-buttons {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 20px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+.deepweb-pin-btn,
+.deepweb-reset-btn {
+  flex: 1 !important;
+  padding: 8px 16px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  background: white !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+}
+
+.deepweb-pin-btn:hover,
+.deepweb-reset-btn:hover {
+  background: #f8f9fa !important;
+  border-color: #667eea !important;
+}
+
+.deepweb-pin-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+/* Drag indicator */
+.deepweb-drag-indicator {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 4px !important;
+  transform: translateX(-50%) !important;
+  width: 40px !important;
+  height: 4px !important;
+  background: #d0d0d0 !important;
+  border-radius: 2px !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.2s !important;
+}
+
+.deepweb-header:hover .deepweb-drag-indicator {
+  opacity: 1 !important;
+}
+
+/* Layout icon for the control button */
+.deepweb-layout-icon {
+  font-size: 16px !important;
+}
+
+/* Transparency effects */
+
+/* Position presets */
+
+/* Always on top (pinned) state */
+
+/* ================================ */
+/* Animation System                 */
+/* ================================ */
+
+/* Animation Keyframes */
+@keyframes deepweb-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes deepweb-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes deepweb-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes deepweb-slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes deepweb-scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes deepweb-scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes deepweb-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes deepweb-skeleton-shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Loading Spinner */
+.deepweb-spinner {
+  display: inline-block;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--theme-primary, #1976d2);
+  border-radius: 50%;
+}
+
+.deepweb-spinner-small {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.deepweb-spinner-medium {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.deepweb-spinner-large {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.deepweb-spinner-animated {
+  animation: deepweb-rotate 0.8s linear infinite;
+}
+
+/* Progress Bar */
+.deepweb-progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.deepweb-progress-fill {
+  height: 100%;
+  background-color: var(--theme-primary, #1976d2);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Skeleton Loader */
+.deepweb-skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.deepweb-skeleton-text {
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.deepweb-skeleton-card {
+  height: 100px;
+  margin-bottom: 16px;
+}
+
+.deepweb-skeleton-list {
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.deepweb-skeleton-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: deepweb-skeleton-shimmer 1.5s infinite;
+}
+
+/* Ripple Effect */
+.deepweb-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+/* Toast Notifications */
+.deepweb-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  z-index: 2147483647;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.deepweb-toast-info {
+  background-color: var(--theme-info, #2196f3);
+}
+
+.deepweb-toast-success {
+  background-color: var(--theme-success, #4caf50);
+}
+
+.deepweb-toast-warning {
+  background-color: var(--theme-warning, #ff9800);
+}
+
+.deepweb-toast-error {
+  background-color: var(--theme-error, #f44336);
+}
+
+/* Page Transition Overlay */
+.deepweb-page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 2147483648;
+  pointer-events: none;
+}
+
+/* Transition Classes */
+.deepweb-transition-fast {
+  transition-duration: 150ms !important;
+}
+
+.deepweb-transition-normal {
+  transition-duration: 300ms !important;
+}
+
+.deepweb-transition-slow {
+  transition-duration: 450ms !important;
+}
+
+/* Hover States with Animations */
+.deepweb-control-btn {
+  transition: all 0.2s ease !important;
+}
+
+.deepweb-control-btn:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.deepweb-control-btn:active:not(:disabled) {
+  transform: translateY(0) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Button Micro-interactions */
+.deepweb-send-btn,
+.deepweb-layout-btn,
+.deepweb-pin-btn,
+.deepweb-reset-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease !important;
+}
+
+.deepweb-send-btn:active:not(:disabled),
+.deepweb-layout-btn:active,
+.deepweb-pin-btn:active,
+.deepweb-reset-btn:active {
+  transform: scale(0.98) !important;
+}
+
+/* Input Focus Animations */
+.deepweb-input,
+.deepweb-model-select {
+  transition: all 0.2s ease !important;
+}
+
+.deepweb-input:focus,
+.deepweb-model-select:focus {
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Message Animation Classes */
+.deepweb-message-enter {
+  animation: deepweb-slide-up 0.3s ease-out forwards;
+}
+
+.deepweb-message-exit {
+  animation: deepweb-fade-out 0.2s ease-out forwards;
+}
+
+.deepweb-message-highlight {
+  background-color: rgba(255, 235, 59, 0.3) !important;
+  border: 2px solid #ffeb3b !important;
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.5) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Modal/Dialog Animations */
+.deepweb-modal-enter {
+  animation: deepweb-scale-in 0.2s ease-out forwards;
+}
+
+.deepweb-modal-exit {
+  animation: deepweb-scale-out 0.2s ease-out forwards;
+}
+
+/* Chat Container Animations */
+#deepweb-chat-root.deepweb-chat-enter {
+  animation: deepweb-slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+#deepweb-chat-root.deepweb-chat-exit {
+  animation: deepweb-slide-down 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Sidebar Slide Animation */
+#deepweb-sidebar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#deepweb-sidebar.deepweb-sidebar-hidden {
+  transform: translateX(-100%) !important;
+}
+
+/* Loading State Animations */
+.deepweb-loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.deepweb-loading-dot {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: deepweb-bounce 1.4s ease-in-out infinite both;
+}
+
+.deepweb-loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.deepweb-loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes deepweb-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .deepweb-spinner-animated {
+    animation: none !important;
+    border-color: var(--theme-primary, #1976d2) !important;
+  }
+  
+  .deepweb-skeleton-animated::before {
+    animation: none !important;
+    background: none !important;
+  }
+  
+  .deepweb-loading-dot {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* No Animation Class */
+.deepweb-no-animations *,
+.deepweb-no-animations *::before,
+.deepweb-no-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Animation Performance Optimization */
+.deepweb-will-animate {
+  will-change: transform, opacity;
+}
+
+.deepweb-animation-complete {
+  will-change: auto;
+}
+
+/* ================================ */
+/* MOBILE RESPONSIVE DESIGN SYSTEM */
+/* ================================ */
+
+/* CSS Custom Properties for Mobile */
+:root {
+  --mobile-header-height: 56px;
+  --mobile-input-height: 48px;
+  --mobile-touch-target: 44px;
+  --mobile-border-radius: 8px;
+  --mobile-font-scale: 1;
+  --tablet-font-scale: 1.1;
+  --desktop-font-scale: 1.2;
+}
+
+/* Viewport Height Units for Mobile */
+
+/* Device Detection Classes */
+
+/* Touch Device Optimizations */
+
+/* Mobile Breakpoints */
+@media (max-width: 480px) {
+  /* Mobile Layout */
+  #deepweb-chat-root {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: calc(14px * var(--mobile-font-scale)) !important;
+  }
+  
+  /* Mobile Header */
+  .deepweb-header {
+    height: var(--mobile-header-height) !important;
+    padding: 8px 16px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    border-radius: 0 !important;
+  }
+  
+  .deepweb-header-title {
+    font-size: calc(18px * var(--mobile-font-scale)) !important;
+  }
+  
+  .deepweb-control-btn {
+    width: var(--mobile-touch-target) !important;
+    height: var(--mobile-touch-target) !important;
+    font-size: 20px !important;
+    border-radius: var(--mobile-border-radius) !important;
+  }
+  
+  /* Mobile Model Selector */
+  .deepweb-model-selector {
+    padding: 12px 16px !important;
+  }
+  
+  .deepweb-model-select {
+    height: var(--mobile-input-height) !important;
+    font-size: calc(16px * var(--mobile-font-scale)) !important;
+    border-radius: var(--mobile-border-radius) !important;
+  }
+  
+  /* Mobile Messages Area */
+  .deepweb-messages {
+    flex: 1 !important;
+    padding: 16px !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Mobile Message Styles */
+  .deepweb-message {
+    font-size: calc(14px * var(--mobile-font-scale)) !important;
+    padding: 12px 16px !important;
+    margin-bottom: 16px !important;
+    border-radius: var(--mobile-border-radius) !important;
+  }
+  
+  .deepweb-message-user {
+    margin-left: 20px !important;
+    margin-right: 0 !important;
+  }
+  
+  .deepweb-message-assistant {
+    margin-left: 0 !important;
+    margin-right: 20px !important;
+  }
+  
+  /* Mobile Input Area */
+  .deepweb-input-area {
+    padding: 16px !important;
+    background: var(--theme-background-paper) !important;
+    border-top: 1px solid var(--theme-divider) !important;
+    border-radius: 0 !important;
+  }
+  
+  .deepweb-input-container {
+    gap: 12px !important;
+  }
+  
+  .deepweb-input {
+    height: var(--mobile-input-height) !important;
+    font-size: calc(16px * var(--mobile-font-scale)) !important;
+    padding: 12px 16px !important;
+    border-radius: var(--mobile-border-radius) !important;
+  }
+  
+  .deepweb-send-btn {
+    height: var(--mobile-input-height) !important;
+    padding: 0 20px !important;
+    font-size: calc(16px * var(--mobile-font-scale)) !important;
+    border-radius: var(--mobile-border-radius) !important;
+    min-width: 80px !important;
+  }
+  
+  /* Mobile Conversation List */
+  .deepweb-conversation-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+  
+  .deepweb-conversation-item {
+    padding: 16px !important;
+    font-size: calc(14px * var(--mobile-font-scale)) !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid var(--theme-divider) !important;
+    min-height: 60px !important;
+  }
+  
+  /* Mobile Scrollbars */
+  .deepweb-messages::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  
+  /* Mobile Layout Controls */
+  .deepweb-layout-controls {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 0 !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Tablet Breakpoints */
+@media (min-width: 481px) and (max-width: 768px) {
+  #deepweb-chat-root {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    font-size: calc(14px * var(--tablet-font-scale)) !important;
+  }
+  
+  .deepweb-header {
+    height: calc(var(--mobile-header-height) + 8px) !important;
+    padding: 12px 20px !important;
+  }
+  
+  .deepweb-control-btn {
+    width: calc(var(--mobile-touch-target) + 4px) !important;
+    height: calc(var(--mobile-touch-target) + 4px) !important;
+  }
+  
+  .deepweb-messages {
+    padding: 20px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .deepweb-input-area {
+    padding: 20px !important;
+  }
+  
+  .deepweb-input {
+    height: calc(var(--mobile-input-height) + 4px) !important;
+    font-size: calc(16px * var(--tablet-font-scale)) !important;
+  }
+  
+  .deepweb-send-btn {
+    height: calc(var(--mobile-input-height) + 4px) !important;
+    font-size: calc(16px * var(--tablet-font-scale)) !important;
+  }
+}
+
+/* Desktop Responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+  #deepweb-chat-root {
+    width: 420px !important;
+    max-width: calc(100vw - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    font-size: calc(14px * var(--desktop-font-scale)) !important;
+  }
+  
+  .deepweb-messages {
+    max-height: calc(100vh - 280px) !important;
+  }
+}
+
+/* Orientation-specific styles */
+
+/* Keyboard Visible State */
+
+/* Touch Interaction Improvements */
+
+/* Swipe Gestures */
+
+/* Pull-to-refresh */
+
+/* Pinch-to-zoom text scaling */
+
+/* Mobile Navigation */
+.mobile-nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 60px !important;
+  background: var(--theme-background-paper) !important;
+  border-top: 1px solid var(--theme-divider) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-around !important;
+  z-index: 100 !important;
+}
+
+.mobile-nav-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: var(--mobile-touch-target) !important;
+  min-height: var(--mobile-touch-target) !important;
+  color: var(--theme-text-secondary) !important;
+  text-decoration: none !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item.active {
+  color: var(--theme-primary) !important;
+  background: rgba(25, 118, 210, 0.1) !important;
+}
+
+.mobile-nav-icon {
+  font-size: 20px !important;
+  margin-bottom: 2px !important;
+}
+
+/* Collapsible Mobile Header */
+.deepweb-header.collapsed {
+  transform: translateY(-100%) !important;
+  transition: transform 0.3s ease !important;
+}
+
+/* Safe Area Support */
+@supports (padding: max(0px)) {
+  .deepweb-header {
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+  }
+  
+  .deepweb-input-area {
+    padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  }
+  
+  .mobile-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* High DPI Display Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .deepweb-logo {
+    background-size: 24px 24px !important;
+  }
+}
+
+/* Reduced Motion for Mobile */
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .deepweb-header.collapsed {
+    transition: none !important;
+  }
+}
+
+/* Template Selector Container */
+#deepweb-template-selector-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+/* Model Parameter Controls */
+
+/* Presets */
+
+/* Parameter Items */
+
+/* Advanced Settings */
+
+/* Actions */
+
+/* Notification */
